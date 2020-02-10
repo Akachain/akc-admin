@@ -1,0 +1,7 @@
+{
+   "host":"localhost",
+   "port":"4001",
+   "jwt_expiretime": "36000",
+   "CC_SRC_PATH":"../artifacts",
+   "eventWaitTime":"30000"
+}
