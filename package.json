@@ -22,7 +22,7 @@
     "fs-extra": "^2.0.0",
     "jsonwebtoken": "^7.3.0",
     "log4js": "^3.0.4",
-    "prom-client": "^11.5.3",
+    "prom-client": "^11.5.3"
   },
   "devDependencies": {
     "eslint": "^5.10.0",

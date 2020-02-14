@@ -79,7 +79,6 @@ const invokeChainCode = async (req) => {
 
 async function upgradeChainCode(req) {
   const {
-    username,
     orgname,
     channelName,
     chaincodeId,
