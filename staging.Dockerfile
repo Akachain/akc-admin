@@ -26,6 +26,7 @@ ENV PATH /data/node_modules/.bin:$PATH
 #Copy source code to app
 WORKDIR /data/app
 COPY package.json /data/app
+COPY .npmrc /data/app
 RUN npm install && npm cache clean --force
 COPY . /data/app
 #Default on container port is 3000
