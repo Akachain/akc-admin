@@ -8,6 +8,7 @@ async function registerUser(req) {
     userName: req.body.username,
     role: req.body.role,
     maxEnrollments: req.body.maxEnrollments,
+    affiliation: req.body.affiliation,
     attrs: req.body.attrs
   }
   user.userName = user.userName || user.orgName
