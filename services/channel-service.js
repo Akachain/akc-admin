@@ -63,9 +63,9 @@ async function joinchannel(req) {
 
   const {
     orgname,
-    channelName,
+    channelName
   } = req.body;
-  const username = orgname;
+  let username = req.body.username || orgname;
   let errorMessage = null;
   const allEventhubs = [];
   try {

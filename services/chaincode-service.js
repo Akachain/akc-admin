@@ -48,13 +48,15 @@ const initChainCode = async (req) => {
     chaincodeVersion,
     chaincodeType,
     args,
+    endorsementPolicy
   } = req.body;
 
   return await akcSDK.initChaincode(orgname, channelName, {
     chaincodeId: chaincodeId,
     chaincodeVersion: chaincodeVersion,
     chaincodeType: chaincodeType,
-    args: args
+    args: args,
+    endorsementPolicy
   })
 };
 
@@ -85,13 +87,15 @@ async function upgradeChainCode(req) {
     chaincodeVersion,
     chaincodeType,
     args,
+    endorsementPolicy,
   } = req.body;
 
   return await akcSDK.upgradeChaincode(orgname, channelName, {
     chaincodeId: chaincodeId,
     chaincodeVersion: chaincodeVersion,
     chaincodeType: chaincodeType,
-    args: args
+    args: args,
+    endorsementPolicy
   })
 }
 
