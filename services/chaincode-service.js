@@ -62,7 +62,6 @@ const initChainCode = async (req) => {
 
 const invokeChainCode = async (req) => {
   const {
-    username,
     orgname,
     channelName,
     chaincodeId,
@@ -70,12 +69,14 @@ const invokeChainCode = async (req) => {
     fcn,
   } = req.body;
 
-  let client = akcSDK.getClientForOrg(orgname);
-  let tlsInfo = await akcSDK.tlsEnroll(client);
-  client.setTlsClientCertAndKey(tlsInfo.certificate, tlsInfo.key);
-  const peers = client.getPeersForOrg();
+  let username = req.body.username || orgname;
 
-  return await akcSDK.invoke(peers, channelName, chaincodeId, fcn, args, orgname, username);
+  const result = await akcSDK.invoke(undefined, channelName, chaincodeId, fcn, args, orgname, username);
+  const success = (result.Result.Status === 200) ? true : false;
+  return {
+    success,
+    message: result.Message
+  }
 };
 
 

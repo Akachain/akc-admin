@@ -5,6 +5,7 @@ const cors = require('cors');
 const hfc = require('fabric-client');
 const promClient = require('prom-client');
 const logger = require('./utils/logger.js').getLogger('admin-service');
+const common = require('./utils/common');
 require('./config.js');
 
 const app = express();
@@ -39,6 +40,7 @@ app.get('/metrics', (req, res) => {
 });
 app.post('/:functionName', (req, res) => {
   const funcName = req.params.functionName;
+  if (req.body.orgname) common.addConnectionProfile(req.body.orgname);
   try {
     switch (funcName) {
       case 'registerUser':
@@ -63,6 +65,16 @@ app.post('/:functionName', (req, res) => {
         break;
       case 'channels':
         channelService.channels(req)
+          .then(result => res.send(result))
+          .catch((err) => {
+            res.status(500).send({
+              success: false,
+              message: err.message
+            });
+          });
+        break;
+      case 'addConnectionProfile':
+        channelService.addConnectionProfile(req)
           .then(result => res.send(result))
           .catch((err) => {
             res.status(500).send({
