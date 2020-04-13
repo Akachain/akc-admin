@@ -20,15 +20,18 @@ const chaincodes = async function chaincodes(req, res) {
     chaincodeVersion,
     chaincodeType,
   } = req.body;
-  let pTmp = path.resolve(__dirname, '../artifacts/src/chaincodes/');
+  let pTmp = path.resolve(__dirname, '../artifacts/src');
   let metadataPath;
   if (req.body.metadata_path != null) {
-    pTmp += req.body.metadata_path;
+    pTmp += `/${req.body.metadata_path}`;
   } else {
-    pTmp = `${pTmp}/${chaincodeId}/META-INF/`;
+    pTmp = `${pTmp}/${chaincodePath}/META-INF/`;
   }
   if (fs.existsSync(pTmp)) {
     metadataPath = pTmp;
+    logger.info(`metadataPath: ${metadataPath}`);
+  } else {
+    logger.error(`metadata_path: ${metadataPath} does not exist`);
   }
 
   return await akcSDK.installChaincode(orgname, {
