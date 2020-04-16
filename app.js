@@ -73,16 +73,6 @@ app.post('/:functionName', (req, res) => {
             });
           });
         break;
-      case 'addConnectionProfile':
-        channelService.addConnectionProfile(req)
-          .then(result => res.send(result))
-          .catch((err) => {
-            res.status(500).send({
-              success: false,
-              message: err.message
-            });
-          });
-        break;
       case 'joinchannel':
         channelService.joinchannel(req)
           .then(result => res.send(result))
@@ -103,36 +93,66 @@ app.post('/:functionName', (req, res) => {
             });
           });
         break;
-      case 'chaincodes':
-        chaincodeService.chaincodes(req, res)
-          .then(result => res.send(result))
-          .catch((err) => {
-            res.status(500).send({
-              success: false,
-              message: err.message
+      case 'packageChaincode':
+          chaincodeService.packageChaincode(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
             });
-          });
-        break;
-      case 'initchaincodes':
-        chaincodeService.initChainCode(req)
-          .then(result => res.send(result))
-          .catch((err) => {
-            res.status(500).send({
-              success: false,
-              message: err.message
+          break;
+      case 'installChaincode':
+          chaincodeService.installChaincode(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
             });
-          });
-        break;
-      case 'upgradeChainCode':
-        chaincodeService.upgradeChainCode(req)
-          .then(result => res.send(result))
-          .catch((err) => {
-            res.status(500).send({
-              success: false,
-              message: err.message
+          break;
+      case 'approveForMyOrg':
+          chaincodeService.approveForMyOrg(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
             });
-          });
-        break;
+          break;
+      case 'checkCommitReadiness':
+          chaincodeService.checkCommitReadiness(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
+            });
+          break;
+      case 'commitChaincodeDefinition':
+          chaincodeService.commitChaincodeDefinition(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
+            });
+          break;
+      case 'queryCommitted':
+          chaincodeService.queryCommitted(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
+            });
+          break;
       case 'invokeChainCode':
         chaincodeService.invokeChainCode(req)
           .then(result => res.send(result))

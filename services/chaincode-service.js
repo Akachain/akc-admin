@@ -1,7 +1,9 @@
 const path = require('path');
 const util = require('util');
 const hfc = require('fabric-client');
+
 const fs = require('fs');
+const shell = require('shelljs')
 const akcSDK = require('@akachain/akc-node-sdk')
 
 const logger = require('../utils/logger.js').getLogger('chaincode-service');
@@ -11,57 +13,42 @@ const setupChaincodeDeploy = () => {
   process.env.GOPATH = path.join(__dirname, hfc.getConfigSetting('CC_SRC_PATH'));
 };
 
-const chaincodes = async function chaincodes(req, res) {
-  setupChaincodeDeploy();
+const packageChaincode = async (req, res) => {
   const {
-    orgname,
-    chaincodeId,
+    chaincodeName,
+    chaincodeVersion,
     chaincodePath,
-    chaincodeVersion,
     chaincodeType,
-  } = req.body;
-  let pTmp = path.resolve(__dirname, '../artifacts/src');
-  let metadataPath;
-  if (req.body.metadata_path != null) {
-    pTmp += `/${req.body.metadata_path}`;
-  } else {
-    pTmp = `${pTmp}/${chaincodePath}/META-INF/`;
-  }
-  if (fs.existsSync(pTmp)) {
-    metadataPath = pTmp;
-    logger.info(`metadataPath: ${metadataPath}`);
-  } else {
-    logger.error(`metadata_path: ${metadataPath} does not exist`);
-  }
-
-  return await akcSDK.installChaincode(orgname, {
-    chaincodePath: chaincodePath,
-    chaincodeId: chaincodeId,
-    metadataPath: metadataPath,
-    chaincodeVersion: chaincodeVersion,
-    chaincodeType: chaincodeType
-  })
-};
-
-const initChainCode = async (req) => {
-  const {
     orgname,
-    channelName,
-    chaincodeId,
-    chaincodeVersion,
-    chaincodeType,
-    args,
-    endorsementPolicy
+    peerIndex
   } = req.body;
-
-  return await akcSDK.initChaincode(orgname, channelName, {
-    chaincodeId: chaincodeId,
-    chaincodeVersion: chaincodeVersion,
-    chaincodeType: chaincodeType,
-    args: args,
-    endorsementPolicy
-  })
-};
+  const cmd = `./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return {
+    success
+  }
+} 
+const installChaincode = async (req, res) => {
+  const result = await shell.exec('pwd');
+  console.log(result);
+} 
+const approveForMyOrg = async (req, res) => {
+  const result = await shell.exec('pwd');
+  console.log(result);
+} 
+const checkCommitReadiness = async (req, res) => {
+  const result = await shell.exec('pwd');
+  console.log(result);
+} 
+const commitChaincodeDefinition = async (req, res) => {
+  const result = await shell.exec('pwd');
+  console.log(result);
+} 
+const queryCommitted = async (req, res) => {
+  const result = await shell.exec('pwd');
+  console.log(result);
+} 
 
 const invokeChainCode = async (req) => {
   const {
@@ -83,27 +70,10 @@ const invokeChainCode = async (req) => {
 };
 
 
-async function upgradeChainCode(req) {
-  const {
-    orgname,
-    channelName,
-    chaincodeId,
-    chaincodeVersion,
-    chaincodeType,
-    args,
-    endorsementPolicy,
-  } = req.body;
-
-  return await akcSDK.upgradeChaincode(orgname, channelName, {
-    chaincodeId: chaincodeId,
-    chaincodeVersion: chaincodeVersion,
-    chaincodeType: chaincodeType,
-    args: args,
-    endorsementPolicy
-  })
-}
-
-exports.chaincodes = chaincodes;
-exports.initChainCode = initChainCode;
-exports.upgradeChainCode = upgradeChainCode;
+exports.packageChaincode = packageChaincode;
+exports.installChaincode = installChaincode;
+exports.approveForMyOrg = approveForMyOrg;
+exports.checkCommitReadiness = checkCommitReadiness;
+exports.commitChaincodeDefinition = commitChaincodeDefinition;
+exports.queryCommitted = queryCommitted;
 exports.invokeChainCode = invokeChainCode;

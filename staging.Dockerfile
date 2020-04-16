@@ -1,5 +1,24 @@
-FROM node:8.15
-#FROM node:10
+FROM hyperledger/fabric-tools:2.0.0
+
+# # Install fabric binary
+# ARG FABRIC_IMAGE_TAG=2.0.0
+# WORKDIR /root
+# RUN curl -sS https://raw.githubusercontent.com/hyperledger/fabric/master/scripts/bootstrap.sh -o ./bootstrap.sh
+# RUN chmod +x bootstrap.sh
+# RUN ./bootstrap.sh -sd $FABRIC_IMAGE_TAG
+# ENV PATH=$PATH:/root/bin/
+
+# Install nodejs
+RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.7/main/ nodejs=8.9.3-r1
+
+# # Install go
+# WORKDIR /root
+# RUN apk add --no-cache --upgrade bash
+# RUN wget https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz
+# RUN tar -xvf go1.13.4.linux-amd64.tar.gz
+# # RUN mv go /usr/local
+# ENV GOROOT=/root/go
+# ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
 #Create folder /app and working with /app folder
 RUN mkdir -p /data/app
@@ -33,3 +52,4 @@ COPY . /data/app
 EXPOSE 4001
 
 CMD npm start
+# CMD tail -f /data/app/package.json
