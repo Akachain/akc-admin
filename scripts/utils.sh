@@ -45,7 +45,7 @@ setGlobals() {
   getDomain $ORG
 
   CORE_PEER_LOCALMSPID="${ORG}MSP"
-  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/peerOrganizations/${DOMAIN}/peers/peer${PEER_INDEX}.${DOMAIN}/tls/ca.crt"
+  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/peerOrganizations/${DOMAIN}/peers/peer${PEER_INDEX}.${DOMAIN}/tls/tlsca.${ORG}-cert.pem"
   CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/peerOrganizations/${DOMAIN}/users/admin/msp"
   CORE_PEER_ADDRESS="peer${PEER_INDEX}-${ORG}.${DOMAIN}:7051"
 

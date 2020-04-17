@@ -51,5 +51,5 @@ COPY . /data/app
 #Default on container port is 3000
 EXPOSE 4001
 
-CMD npm start
-# CMD tail -f /data/app/package.json
+# CMD npm start
+CMD tail -f /data/app/package.json

@@ -25,13 +25,31 @@ const packageChaincode = async (req, res) => {
   const cmd = `./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return {
-    success
-  }
+  return { success }
 } 
 const installChaincode = async (req, res) => {
-  const result = await shell.exec('pwd');
-  console.log(result);
+  const {
+    chaincodeName,
+    orgname,
+    peerIndex
+  } = req.body;
+  const cmd = `./scripts/install_chaincode.sh "${chaincodeName}" "${peerIndex}" "${orgname}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return { success }
+} 
+const queryInstalled = async (req, res) => {
+  const {
+    orgname,
+    peerIndex
+  } = req.body;
+  const cmd = `./scripts/query_installed.sh "${peerIndex}" "${orgname}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return {
+    success,
+    packageId: result.stdout.replace('\n', '')
+   }
 } 
 const approveForMyOrg = async (req, res) => {
   const result = await shell.exec('pwd');
@@ -72,6 +90,7 @@ const invokeChainCode = async (req) => {
 
 exports.packageChaincode = packageChaincode;
 exports.installChaincode = installChaincode;
+exports.queryInstalled = queryInstalled;
 exports.approveForMyOrg = approveForMyOrg;
 exports.checkCommitReadiness = checkCommitReadiness;
 exports.commitChaincodeDefinition = commitChaincodeDefinition;

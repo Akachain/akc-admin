@@ -113,6 +113,16 @@ app.post('/:functionName', (req, res) => {
               });
             });
           break;
+      case 'queryInstalled':
+          chaincodeService.queryInstalled(req, res)
+            .then(result => res.send(result))
+            .catch((err) => {
+              res.status(500).send({
+                success: false,
+                message: err.message
+              });
+            });
+          break;
       case 'approveForMyOrg':
           chaincodeService.approveForMyOrg(req, res)
             .then(result => res.send(result))
