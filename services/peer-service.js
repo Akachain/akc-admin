@@ -10,7 +10,7 @@ const updateAnchorPeers = async (channelName, configUpdatePath, username, orgnam
   let errorMessage = null;
   try {
     // first setup the client for this org
-    const client = await akcSDK.getClientForOrg(orgname, username);
+    const client = await akcSDK.getClientForOrg(orgname, username, true);
     logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
     const channel = client.getChannel(channelName);
     if (!channel) {

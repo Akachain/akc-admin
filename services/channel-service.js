@@ -12,9 +12,11 @@ async function channels(req) {
     orgname,
   } = req.body;
 
+  let username = req.body.username || orgname;
+
   try {
     // first setup the client for this org
-    const client = await akcSDK.getClientForOrg(orgname);
+    const client = await akcSDK.getClientForOrg(orgname, username, true);
     logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
 
     // enable Client TLS
@@ -69,7 +71,7 @@ async function joinchannel(req) {
   let errorMessage = null;
   const allEventhubs = [];
   try {
-    const client = await akcSDK.getClientForOrg(orgname, username);
+    const client = await akcSDK.getClientForOrg(orgname, username, true);
     logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
 
     // enable Client TLS
@@ -161,7 +163,7 @@ const getGenesisBlock = async (req) => {
   } = req.body;
   const username = orgname;
   try {
-    const client = await akcSDK.getClientForOrg(orgname, username);
+    const client = await akcSDK.getClientForOrg(orgname, username, true);
     logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
 
     // enable Client TLS
