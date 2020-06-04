@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# import .env
-[[ -f .env ]] && source .env
-
 # import utils
 . scripts/utils.sh
 

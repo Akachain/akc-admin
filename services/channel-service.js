@@ -199,6 +199,49 @@ const getGenesisBlock = async (req) => {
   }
 };
 
+const getBlock = async (req) => {
+  const {
+    orgname,
+    username,
+    channelName,
+    blockNumber,
+    txId
+  } = req.body;
+  const client = await akcSDK.getClientForOrg(orgname, username, true);
+  logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
+  const channel = client.getChannel(channelName);
+  if (!channel) {
+    const message = util.format('Channel %s was not defined in the connection profile', channelName);
+    logger.error(message);
+    throw new Error(message);
+  }
+  const targets = client.getPeersForOrg()[0];
+  if ( blockNumber && blockNumber !== '' ) {
+    logger.debug(util.format('Get block number %s', blockNumber));
+    const result = await channel.queryBlock(Number(blockNumber), targets);
+    logger.debug('query response: ', JSON.stringify(result));
+    return {
+      success: true,
+      data: result,
+    };
+  } else if ( txId && txId !== '' ) {
+    logger.debug(util.format('Get block transaction %s', txId));
+    // send proposal to endorser
+    const result = await channel.queryBlockByTxID(txId, targets);
+    logger.debug('query response: ', JSON.stringify(result));
+    return {
+      success: true,
+      data: result,
+    };
+  } else {
+    return {
+      success: false,
+      msg: 'Missing blockNumber or txId in req.body'
+    }
+  }
+}
+
 exports.channels = channels;
+exports.getBlock = getBlock;
 exports.joinchannel = joinchannel;
 exports.getGenesisBlock = getGenesisBlock;

@@ -7,12 +7,15 @@ const shell = require('shelljs')
 const akcSDK = require('@akachain/akc-node-sdk')
 
 const fabricClient = require('../utils/client.js');
+const common = require('../utils/common.js');
 const logger = require('../utils/logger.js').getLogger('chaincode-service');
 hfc.setLogger(logger);
 
 const setupChaincodeDeploy = () => {
   process.env.GOPATH = path.join(__dirname, hfc.getConfigSetting('CC_SRC_PATH'));
 };
+
+const env = common.getEnv();
 
 const chaincodes = async function chaincodes(req, res) {
   setupChaincodeDeploy();
@@ -45,45 +48,6 @@ const chaincodes = async function chaincodes(req, res) {
     chaincodeType: chaincodeType
   })
 };
-
-const packageChaincode = async (req, res) => {
-  const {
-    chaincodeName,
-    chaincodeVersion,
-    chaincodePath,
-    chaincodeType,
-    orgname,
-    peerIndex
-  } = req.body;
-  const cmd = `./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
-  const result = await shell.exec(cmd);
-  const success = (result.code === 0) ? true : false;
-  return { success }
-} 
-const installChaincode = async (req, res) => {
-  const {
-    chaincodeName,
-    orgname,
-    peerIndex
-  } = req.body;
-  const cmd = `./scripts/install_chaincode.sh "${chaincodeName}" "${peerIndex}" "${orgname}"`;
-  const result = await shell.exec(cmd);
-  const success = (result.code === 0) ? true : false;
-  return { success }
-} 
-const queryInstalled = async (req, res) => {
-  const {
-    orgname,
-    peerIndex
-  } = req.body;
-  const cmd = `./scripts/query_installed.sh "${peerIndex}" "${orgname}"`;
-  const result = await shell.exec(cmd);
-  const success = (result.code === 0) ? true : false;
-  return {
-    success,
-    packageId: result.stdout.replace('\n', '')
-   }
-}
 
 const initChainCode = async (req) => {
   const {
@@ -129,8 +93,27 @@ const initChainCode = async (req) => {
       txId,
     };
 
-    const results = await channel.sendInstantiateProposal(request, 160000);
-    // instantiate takes much longer
+
+    // query packageID
+
+    // const results = await channel.sendInstantiateProposal(request, 160000);
+    // // instantiate takes much longer
+
+
+    // approve
+    const approveRequest = {
+      targets: peers,
+      channelId: 'akctestchannel',
+      chaincodeId,
+      chaincodeVersion,
+      txId,
+      initRequired: true,
+      chaincodeSequence: 1,
+      args,
+      packageId: 'abstoreee_1:30c77ebd0687259f52697fe6f66e0963ac0084b63e18376a33fca80df4cb48ad'
+    }
+    const results = await channel.approveChaincode(approveRequest, 160000);
+    console.log('lelelele: ', results);
 
     // the returned object has both the endorsement results
     // and the actual proposal, the proposal will be needed
@@ -275,19 +258,91 @@ const initChainCode = async (req) => {
   throw new Error(message);
 };
 
+const packageChaincode = async (req, res) => {
+  const {
+    chaincodeName,
+    chaincodeVersion,
+    chaincodePath,
+    chaincodeType,
+    orgname,
+    peerIndex
+  } = req.body;
+  const cmd = `${env} ./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return { success }
+} 
+const installChaincode = async (req, res) => {
+  const {
+    chaincodeName,
+    orgname,
+    peerIndex
+  } = req.body;
+  const cmd = `${env} ./scripts/install_chaincode.sh "${chaincodeName}" "${peerIndex}" "${orgname}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return { success }
+} 
+const queryInstalled = async (req, res) => {
+  const {
+    orgname,
+    peerIndex
+  } = req.body;
+  const cmd = `${env} ./scripts/query_installed.sh "${peerIndex}" "${orgname}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return {
+    success,
+    packageId: result.stdout.replace('\n', '')
+   }
+}
 
 const approveForMyOrg = async (req, res) => {
-  const result = await shell.exec('pwd');
-  console.log(result);
+  const {
+    orgname,
+    peerIndex,
+    chaincodeName,
+    chaincodeVersion,
+    channelName,
+    packageId,
+  } = req.body;
+  const cmd = `${env} ./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgname}" "${channelName}" "${packageId}" "${chaincodeName}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return { success }
 } 
 const checkCommitReadiness = async (req, res) => {
   const result = await shell.exec('pwd');
   console.log(result);
 } 
 const commitChaincodeDefinition = async (req, res) => {
-  const result = await shell.exec('pwd');
-  console.log(result);
+  const {
+    chaincodeName,
+    chaincodeVersion,
+    channelName,
+    target,
+    ordererAddress
+  } = req.body;
+  const cmd = `${env} ./scripts/commit_chaincode.sh "${chaincodeVersion}" "${chaincodeName}" "${channelName}" "${ordererAddress}" ${target}`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return { success }
 } 
+
+const newInvoke = async (req, res) => {
+  const {
+    chaincodeName,
+    channelName,
+    target,
+    ordererAddress,
+    isInit
+  } = req.body;
+  const cmd = `${env} ./scripts/invoke_chaincode.sh "${isInit}" "${chaincodeName}" "${channelName}" "${ordererAddress}" ${target}`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  return { success }
+} 
+
 const queryCommitted = async (req, res) => {
   const result = await shell.exec('pwd');
   console.log(result);
@@ -323,3 +378,4 @@ exports.checkCommitReadiness = checkCommitReadiness;
 exports.commitChaincodeDefinition = commitChaincodeDefinition;
 exports.queryCommitted = queryCommitted;
 exports.invokeChainCode = invokeChainCode;
+exports.newInvoke = newInvoke;

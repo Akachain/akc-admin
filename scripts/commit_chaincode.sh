@@ -1,14 +1,15 @@
 #!/bin/bash
 
-# import .env
-[[ -f .env ]] && source .env
-
 # import utils
 . scripts/utils.sh
 
 # checkCommitReadiness
 VERSION=$1
 CHAINCODENAME=$2
+CHANNEL_NAME=$3
+ORDERER_ADDRESS=$4
+shift
+shift
 shift
 shift
 parsePeerConnectionParameters $@

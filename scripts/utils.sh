@@ -1,4 +1,13 @@
 
+# check ENV
+if [ "$ORGS" == "" ]; then
+  echo "Error: Missing <ORGS>..."
+  exit 1
+elif [ "$DOMAINS" == "" ]; then
+  echo "Error: Missing <DOMAINS>..."
+  exit 1
+fi
+
 # ORDERER_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
 # PEER0_ORG1_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt
 # PEER0_ORG2_CA=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
@@ -45,8 +54,13 @@ setGlobals() {
   getDomain $ORG
 
   CORE_PEER_LOCALMSPID="${ORG}MSP"
-  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/peerOrganizations/${DOMAIN}/peers/peer${PEER_INDEX}.${DOMAIN}/tls/tlsca.${ORG}-cert.pem"
-  CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/peerOrganizations/${DOMAIN}/users/admin/msp"
+  # # use on first-network
+  # CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/peerOrganizations/${DOMAIN}/peers/peer${PEER_INDEX}.${DOMAIN}/tls/ca.crt"
+  # CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/peerOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp/"
+  # CORE_PEER_ADDRESS="peer${PEER_INDEX}.${DOMAIN}:7051"
+  # # use on mamba 
+  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/${ORG}.${DOMAIN}/peers/peer${PEER_INDEX}-${ORG}.${DOMAIN}/tls/ca.crt"
+  CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/${ORG}.${DOMAIN}/users/admin/msp"
   CORE_PEER_ADDRESS="peer${PEER_INDEX}-${ORG}.${DOMAIN}:7051"
 
   # if [ $ORG -eq 1 ]; then
@@ -417,7 +431,7 @@ parsePeerConnectionParameters() {
   while [ "$#" -gt 0 ]; do
     setGlobals $1 $2
     getDomain $2
-    PEER="peer$1-$DOMAIN.$2"
+    PEER="peer$1.$DOMAIN"
     PEERS="$PEERS $PEER"
     PEER_CONN_PARMS="$PEER_CONN_PARMS --peerAddresses $CORE_PEER_ADDRESS"
     if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "true" ]; then
