@@ -59,7 +59,7 @@ setGlobals() {
   # CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/peerOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp/"
   # CORE_PEER_ADDRESS="peer${PEER_INDEX}.${DOMAIN}:7051"
   # # use on mamba 
-  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/${ORG}.${DOMAIN}/peers/peer${PEER_INDEX}-${ORG}.${DOMAIN}/tls/ca.crt"
+  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/${ORG}.${DOMAIN}/peers/peer${PEER_INDEX}-${ORG}.${DOMAIN}/tls/tlsintermediatecerts/tls-ica-${ORG}-${DOMAIN}-7054.pem"
   CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/${ORG}.${DOMAIN}/users/admin/msp"
   CORE_PEER_ADDRESS="peer${PEER_INDEX}-${ORG}.${DOMAIN}:7051"
 
