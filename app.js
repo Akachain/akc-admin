@@ -73,16 +73,6 @@ app.post('/:functionName', (req, res) => {
             });
           });
         break;
-      case 'addConnectionProfile':
-        channelService.addConnectionProfile(req)
-          .then(result => res.send(result))
-          .catch((err) => {
-            res.status(500).send({
-              success: false,
-              message: err.message
-            });
-          });
-        break;
       case 'joinchannel':
         channelService.joinchannel(req)
           .then(result => res.send(result))
