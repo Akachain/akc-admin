@@ -43,6 +43,16 @@ app.post('/:functionName', (req, res) => {
   if (req.body.orgname) common.addConnectionProfile(req.body.orgname);
   try {
     switch (funcName) {
+      case 'getBlock':
+        channelService.getBlock(req)
+          .then(result => res.send(result))
+          .catch((err) => {
+            res.status(500).send({
+              success: false,
+              message: err.message
+            });
+          });
+        break;
       case 'registerUser':
         caService.registerUser(req)
           .then(result => res.send(result))

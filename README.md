@@ -51,7 +51,7 @@ curl -s -X POST http://IP_Address:4001/getGenesisBlock -H "content-type: applica
 
 ```
 
-### Install chaincode
+### Install Chaincode
 ```
 curl -s -X POST http://IP_Address:4001/chaincodes -H "content-type: application/json"   -d '{
   "orgname":"{ORG_NAME}",
@@ -62,7 +62,7 @@ curl -s -X POST http://IP_Address:4001/chaincodes -H "content-type: application/
 }'
 
 ```
-### Init chaincode
+### Init Chaincode
 ```
 curl -s -X POST http://IP_Address:4001/initchaincodes -H "content-type: application/json" -d '{
   "orgname":"{ORG_NAME}",
@@ -75,7 +75,7 @@ curl -s -X POST http://IP_Address:4001/initchaincodes -H "content-type: applicat
 }'
 ```
 
-### Upgrade chaincode
+### Upgrade Chaincode
 ```
 curl -s -X POST http://IP_Address:4001/upgradeChainCode -H "content-type: application/json" -d '{
   "orgname":"{ORG_NAME}",
@@ -98,7 +98,7 @@ curl -s -X POST http://IP_Address:4001/updateAnchorPeer -H "content-type: applic
 }'
 ```
 
-### Invoke chaincode
+### Invoke Chaincode
 ```
 curl -s -X POST http://IP_Address:4001/invokeChainCode -H "content-type: application/json" -d '{
   "orgname":"{ORG_NAME}",
@@ -106,5 +106,16 @@ curl -s -X POST http://IP_Address:4001/invokeChainCode -H "content-type: applica
   "chaincodeId":"{CHAINCODE_ID}",
   "fcn":"{FUNCTION_NAME}",
   "args": {ARRAY_ARGUMENT}
+}'
+```
+
+### Query Block By Block Number Or Transaction ID
+```
+curl -s -X POST http://IP_Address:4001/getBlock -H "content-type: application/json" -d '{
+  "orgname":"{ORG_NAME}",
+  "username":"{USER_NAME}",
+  "channelName":"{CHANNEL_NAME}",
+  "blockNumber":"{BLOCK_NUMBER}",
+  "txId": {TRANSACTION_ID}
 }'
 ```
