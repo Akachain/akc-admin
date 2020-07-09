@@ -45,7 +45,7 @@ ENV PATH /data/node_modules/.bin:$PATH
 #Copy source code to app
 WORKDIR /data/app
 RUN mkdir node_modules
-COPY fabric-sdk-node/fabric-client /data/app/node_modules
+# COPY fabric-sdk-node/fabric-client /data/app/node_modules
 COPY package.json /data/app
 COPY .npmrc /data/app
 RUN npm install && npm cache clean --force
@@ -55,4 +55,4 @@ COPY . /data/app
 EXPOSE 4001
 
 # CMD npm start
-CMD tail -f /data/app/package.json
+CMD tail -f /dev/null

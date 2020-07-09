@@ -8,6 +8,10 @@ IS_INIT=$1
 CHAINCODENAME=$2
 CHANNEL_NAME=$3
 ORDERER_ADDRESS=$4
+FUNCTION_NAME=$5
+ARGS=$6
+shift
+shift
 shift
 shift
 shift
@@ -15,11 +19,10 @@ shift
 parsePeerConnectionParameters $@
 res=$?
 verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to uneven number of peer and org parameters "
+CCARGS='{"function":"'${FUNCTION_NAME}'","Args":['${ARGS}']}'
 if [ "${IS_INIT}" -eq "1" ]; then
-  CCARGS='{"Args":["Init","a","100","b","100"]}'
   INIT_ARG="--isInit"
 else
-  CCARGS='{"Args":["invoke","a","b","10"]}'
   INIT_ARG=""
 fi
 

@@ -8,6 +8,7 @@ const akcSDK = require('@akachain/akc-node-sdk')
 
 const fabricClient = require('../utils/client.js');
 const common = require('../utils/common.js');
+const { type } = require('os');
 const logger = require('../utils/logger.js').getLogger('chaincode-service');
 hfc.setLogger(logger);
 
@@ -337,7 +338,12 @@ const newInvoke = async (req, res) => {
     ordererAddress,
     isInit
   } = req.body;
-  const cmd = `${env} ./scripts/invoke_chaincode.sh "${isInit}" "${chaincodeName}" "${channelName}" "${ordererAddress}" ${target}`;
+  let { fcn } = req.body;
+  if (isInit === '1' && !fcn) {
+    fcn = 'initLedger';
+  }
+  const args = req.body.args || '';
+  const cmd = `${env} ./scripts/invoke_chaincode.sh "${isInit}" "${chaincodeName}" "${channelName}" "${ordererAddress}" "${fcn}" "${args}" ${target}`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   return { success }
