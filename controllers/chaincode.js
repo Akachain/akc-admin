@@ -1,6 +1,9 @@
 'use strict';
 
 const shell = require('shelljs');
+const common = require('../utils/common');
+
+const env = common.getEnv();
 
 const packageCC = async (req, res) => {
   const {
@@ -11,10 +14,10 @@ const packageCC = async (req, res) => {
     orgname,
     peerIndex
   } = req.body;
-  const cmd = `./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
+  const cmd = `${env} ./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return res.json({ success });
+  common.result(res, success);
 };
 const install = async (req, res) => {
   const {
@@ -22,23 +25,20 @@ const install = async (req, res) => {
     orgname,
     peerIndex
   } = req.body;
-  const cmd = `./scripts/install_chaincode.sh "${chaincodeName}" "${peerIndex}" "${orgname}"`;
+  const cmd = `${env} ./scripts/install_chaincode.sh "${chaincodeName}" "${peerIndex}" "${orgname}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return res.json({ success });
+  common.result(res, success);
 };
 const queryInstalled = async (req, res) => {
   const {
     orgname,
     peerIndex
   } = req.body;
-  const cmd = `./scripts/query_installed.sh "${peerIndex}" "${orgname}"`;
+  const cmd = `${env} ./scripts/query_installed.sh "${peerIndex}" "${orgname}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return res.json({
-    success,
-    packageId: result.stdout.replace('\n', '')
-  });
+  common.result(res, success, undefined, [{ packageId: result.stdout.replace('\n', '')}] );
 };
 
 const approveForMyOrg = async (req, res) => {
@@ -49,19 +49,16 @@ const approveForMyOrg = async (req, res) => {
     chaincodeVersion,
     channelName,
     packageId,
-    signaturePolicy
+    signaturePolicy,
+    ordererAddress
   } = req.body;
   process.env.SIGNATURE_POLICY = signaturePolicy;
-  const cmd = `./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgname}" "${channelName}" "${packageId}" "${chaincodeName}" "${signaturePolicy}`;
+  const cmd = `${env} ./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgname}" "${channelName}" "${packageId}" "${chaincodeName}" "${ordererAddress}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return res.json({ success });
+  common.result(res, success);
 };
-const checkCommitReadiness = async (req, res) => {
-  // const result = await shell.exec('pwd');
-  // console.log(result);
-  return res.json({ success: true });
-};
+
 const commitChaincodeDefinition = async (req, res) => {
   const {
     chaincodeName,
@@ -70,10 +67,10 @@ const commitChaincodeDefinition = async (req, res) => {
     target,
     ordererAddress
   } = req.body;
-  const cmd = `./scripts/commit_chaincode.sh "${chaincodeVersion}" "${chaincodeName}" "${channelName}" "${ordererAddress}" ${target}`;
+  const cmd = `${env} ./scripts/commit_chaincode.sh "${chaincodeVersion}" "${chaincodeName}" "${channelName}" "${ordererAddress}" ${target}`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return res.json({ success });
+  common.result(res, success);
 };
 
 const invokeCLI = async (req, res) => {
@@ -91,24 +88,15 @@ const invokeCLI = async (req, res) => {
     fcn = 'initLedger';
   }
   const args = req.body.args || '';
-  const cmd = `./scripts/invoke_chaincode.sh "${isInit}" "${chaincodeName}" "${channelName}" "${ordererAddress}" "${fcn}" "${args}" ${target}`;
+  const cmd = `${env} ./scripts/invoke_chaincode.sh "${isInit}" "${chaincodeName}" "${channelName}" "${ordererAddress}" "${fcn}" "${args}" ${target}`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  return res.json({ success });
+  common.result(res, success);
 };
 
-const queryCommitted = async (req, res) => {
-  // const result = await shell.exec('pwd');
-  return res.json({ success: true });
-};
-
-exports = {
-  packageCC,
-  install,
-  queryInstalled,
-  approveForMyOrg,
-  checkCommitReadiness,
-  commitChaincodeDefinition,
-  queryCommitted,
-  invokeCLI
-};
+exports.packageCC = packageCC;
+exports.install = install;
+exports.queryInstalled = queryInstalled;
+exports.approveForMyOrg = approveForMyOrg;
+exports.commitChaincodeDefinition = commitChaincodeDefinition;
+exports.invokeCLI = invokeCLI;

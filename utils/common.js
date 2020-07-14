@@ -13,5 +13,25 @@
 const getEnv = () => {
   return `ORGS="${process.env.ORGS}" DOMAINS="${process.env.DOMAINS}"`;
 };
+
+const result = (res, status, msg = '', data = []) => {
+  return res.json({
+    success: status,
+    msg,
+    data
+  });
+};
+
+const succeeded = (res, msg = '', data = []) => {
+  result(res, true, msg, data);
+};
+
+const failed = (res, msg = '', data = []) => {
+  result(res, false, msg, data);
+};
+
 // exports.addConnectionProfile = addConnectionProfile;
 exports.getEnv = getEnv;
+exports.succeeded = succeeded;
+exports.failed = failed;
+exports.result = result;

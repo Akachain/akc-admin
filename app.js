@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const http = require('http');
 const cors = require('cors');
 const loggerCommon = require('./utils/logger');
-// const routeChannel = require('./routes/channel');
+const routeChannel = require('./routes/channel');
 const routeChaincode = require('./routes/chaincode');
 // const routePeer = require('./routes/peer');
 const routeCA = require('./routes/ca');
@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 
-// app.use('/api/v2/channels', routeChannel);
+app.use('/api/v2/channels', routeChannel);
 app.use('/api/v2/chaincodes', routeChaincode);
 // app.use('/api/v2/peers', routePeer);
 app.use('/api/v2/cas', routeCA);

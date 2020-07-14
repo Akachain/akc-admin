@@ -54,50 +54,14 @@ setGlobals() {
   getDomain $ORG
 
   CORE_PEER_LOCALMSPID="${ORG}MSP"
-  # # use on first-network
-  # CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/peerOrganizations/${DOMAIN}/peers/peer${PEER_INDEX}.${DOMAIN}/tls/ca.crt"
-  # CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/peerOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp/"
-  # CORE_PEER_ADDRESS="peer${PEER_INDEX}.${DOMAIN}:7051"
-  # # use on mamba 
-  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/${ORG}.${DOMAIN}/peers/peer${PEER_INDEX}-${ORG}.${DOMAIN}/tls/tlsintermediatecerts/tls-ica-${ORG}-${DOMAIN}-7054.pem"
-  CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/${ORG}.${DOMAIN}/users/admin/msp"
-  CORE_PEER_ADDRESS="peer${PEER_INDEX}-${ORG}.${DOMAIN}:7051"
-
-  # if [ $ORG -eq 1 ]; then
-  #   CORE_PEER_LOCALMSPID="Org1MSP"
-  #   CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
-  #   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
-  #   if [ $PEER -eq 0 ]; then
-  #     CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-  #   else
-  #     CORE_PEER_ADDRESS=peer1.org1.example.com:8051
-  #   fi
-  # elif [ $ORG -eq 2 ]; then
-  #   CORE_PEER_LOCALMSPID="Org2MSP"
-  #   CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
-  #   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
-  #   if [ $PEER -eq 0 ]; then
-  #     CORE_PEER_ADDRESS=peer0.org2.example.com:9051
-  #   else
-  #     CORE_PEER_ADDRESS=peer1.org2.example.com:10051
-  #   fi
-
-  # elif [ $ORG -eq 3 ]; then
-  #   CORE_PEER_LOCALMSPID="Org3MSP"
-  #   CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
-  #   CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
-  #   if [ $PEER -eq 0 ]; then
-  #     CORE_PEER_ADDRESS=peer0.org3.example.com:11051
-  #   else
-  #     CORE_PEER_ADDRESS=peer1.org3.example.com:12051
-  #   fi
-  # else
-  #   echo "================== ERROR !!! ORG Unknown =================="
-  # fi
-
-  # if [ "$VERBOSE" == "true" ]; then
-  #   env | grep CORE
-  # fi
+  # use on first-network
+  CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/peerOrganizations/${DOMAIN}/peers/peer${PEER_INDEX}.${DOMAIN}/tls/ca.crt"
+  CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/peerOrganizations/${DOMAIN}/users/Admin@${DOMAIN}/msp/"
+  CORE_PEER_ADDRESS="peer${PEER_INDEX}.${DOMAIN}:7051"
+  # # # use on mamba 
+  # CORE_PEER_TLS_ROOTCERT_FILE="/shared/crypto-config/${ORG}.${DOMAIN}/peers/peer${PEER_INDEX}-${ORG}.${DOMAIN}/tls/tlsintermediatecerts/tls-ica-${ORG}-${DOMAIN}-7054.pem"
+  # CORE_PEER_MSPCONFIGPATH="/shared/crypto-config/${ORG}.${DOMAIN}/users/admin/msp"
+  # CORE_PEER_ADDRESS="peer${PEER_INDEX}-${ORG}.${DOMAIN}:7051"
 }
 
 # updateAnchorPeers() {

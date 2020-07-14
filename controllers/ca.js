@@ -7,28 +7,13 @@ const FabricCAServices = require('fabric-ca-client');
 const fs = require('fs');
 const path = require('path');
 const logger = require('../utils/logger.js').getLogger('ca-service');
+const common = require('../utils/common');
 
 const type = 'X.509';
 
 // const orgMSP = 'Org1MSP';
 // const caHost = 'ca.org1.example.com';
 // const connectionProfilePath = 'artifacts/connection-org1.json';
-
-const result = (res, status, msg = '', data = []) => {
-  return res.json({
-    success: status,
-    msg,
-    data
-  });
-};
-
-const success = (res, msg = '', data = []) => {
-  return result(res, true, msg, data);
-};
-
-const fail = (res, msg = '', data = []) => {
-  return result(res, false, msg, data);
-};
 
 async function registerUser(req, res) {
   // TODO: Verify INPUT
@@ -69,7 +54,7 @@ async function registerUser(req, res) {
     if (userIdentity) {
       msg = `An identity for the user ${user.userName} already exists in the wallet`;
       logger.debug(msg);
-      return success(res, msg);
+      common.succeeded(res, msg);
     }
 
     // Check to see if we've already enrolled the admin user.
@@ -78,7 +63,7 @@ async function registerUser(req, res) {
       msg = `An identity for the admin user "${caAdminUser}" does not exist in the wallet`;
       logger.error(msg);
       logger.error('Run the enrollAdmin.js application before retrying');
-      return fail(res, msg);
+      common.failed(res, msg);
     }
 
     // build a user object for authenticating with the CA
@@ -106,12 +91,12 @@ async function registerUser(req, res) {
     await wallet.put(user.userName, x509Identity);
     msg = `Successfully registered and enrolled admin user "${user.userName}" and imported it into the wallet`;
     logger.debug(msg);
-    success(res, msg);
+    common.succeeded(res, msg);
     // return akcSDK.registerUser(user)
   } catch (err) {
     logger.error(`Failed to register user ${user.userName} for the ${orgName}: ${err.stack ? err.stack : err}`);
     msg = err.toString();
-    fail(res, msg);
+    common.failed(res, msg);
   }
 }
 
@@ -150,7 +135,7 @@ async function enrollAdmin(req, res) {
     if (identity) {
       msg = `An identity for the admin user ${caAdminUser} already exists in the wallet`;
       logger.debug(msg);
-      success(res, msg);
+      common.succeeded(res, msg);
     }
 
     // Enroll the admin user, and import the new identity into the wallet.
@@ -169,12 +154,12 @@ async function enrollAdmin(req, res) {
     await wallet.put(caAdminUser, x509Identity);
     msg = `Successfully enrolled admin user ${caAdminUser} and imported it into the wallet`;
     logger.debug(msg);
-    success(res, msg);
+    common.succeeded(res, msg);
 
   } catch (error) {
     msg = `Failed to enroll admin user ${caAdminUser}: ${error}`;
     console.error(msg);
-    fail(res, msg);
+    common.failed(res, msg);
   }
 }
 
