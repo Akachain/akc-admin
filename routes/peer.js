@@ -1,9 +1,9 @@
-// 'use strict';
-// const express = require('express');
+'use strict';
+const express = require('express');
 
-// const router = express.Router();
-// const peer = require('../controllers/peer');
+const router = express.Router();
+const peer = require('../controllers/peer');
 
-// router.route('/updateAnchorPeers').post(peer.updateAnchorPeers);
+router.route('/updateAnchorPeer').post(peer.updateAnchorPeer);
 
-// module.exports = router;
+module.exports = router;
