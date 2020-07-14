@@ -9,7 +9,9 @@ FROM hyperledger/fabric-tools:2.0.0
 # ENV PATH=$PATH:/root/bin/
 
 # Install nodejs
-RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.7/main/ nodejs=8.9.3-r1
+# RUN apk add  --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.7/main/ nodejs=8.9.3-r1
+RUN apk add  --no-cache nodejs npm
+RUN node -v
 
 # # Install go
 # WORKDIR /root
@@ -54,5 +56,5 @@ COPY . /data/app
 #Default on container port is 3000
 EXPOSE 4001
 
-# CMD npm start
-CMD tail -f /dev/null
+CMD npm start
+# CMD tail -f /dev/null

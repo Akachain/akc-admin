@@ -1,32 +1,25 @@
 {
   "name": "akc-admin",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A akaChain Application using akc-node-sdk APIs",
   "main": "server.js",
   "scripts": {
+    "lint": "eslint .",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
   "keywords": [],
   "license": "GNU-3.0",
   "dependencies": {
-    "@akachain/akc-node-sdk": "^2.1.5",
     "body-parser": "^1.19.0",
     "cors": "^2.8.3",
     "express": "^4.17.1",
-    "express-bearer-token": "^2.4.0",
-    "express-jwt": "^5.1.0",
-    "express-session": "^1.17.0",
-    "fabric-ca-client": "^1.4.5",
-    "fs-extra": "^2.0.0",
-    "jsonwebtoken": "^7.3.0",
+    "fabric-ca-client": "^2.1.0",
+    "fabric-network": "^2.1.0",
     "log4js": "^3.0.4",
-    "prom-client": "^11.5.3",
     "shelljs": "^0.8.3"
   },
   "devDependencies": {
-    "eslint": "^5.10.0",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-plugin-import": "^2.14.0"
+    "eslint": "^5.10.0"
   }
 }
