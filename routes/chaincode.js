@@ -4,6 +4,7 @@ const express = require('express');
 const router = express.Router();
 const chaincode = require('../controllers/chaincode');
 
+router.route('/packageExternalCC').post(chaincode.packageExternalCC);
 router.route('/packageCC').post(chaincode.packageCC);
 router.route('/install').post(chaincode.install);
 router.route('/queryInstalled').post(chaincode.queryInstalled);

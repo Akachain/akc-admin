@@ -103,7 +103,7 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/approveFo
     "chaincodeVersion": 1,
     "channelName": "mychannel",
     "packageId": "abstore_1:6b792d529cbd21b2e0dc5f91404154235bf2cddcb073c59e21780ef419a6c23e",
-		"ordererAddress": "orderer.example.com:7050"
+    "ordererAddress": "orderer.example.com:7050"
 }'
 ```
 ### Commit Chaincode Definition

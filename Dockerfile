@@ -1,4 +1,4 @@
-FROM hyperledger/fabric-tools:2.0.0
+FROM hyperledger/fabric-tools:2.2.0
 
 RUN apk add  --no-cache nodejs npm
 RUN node -v
