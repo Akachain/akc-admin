@@ -5,6 +5,16 @@ const common = require('../utils/common');
 
 const env = common.getEnv();
 
+const packageExternalCC = async (req, res) => {
+  const {
+    chaincodeName,
+    orgname,
+  } = req.body;
+  const cmd = `${env} ./scripts/package_external_cc.sh "${chaincodeName}" "${orgname}"`;
+  const result = await shell.exec(cmd);
+  const success = (result.code === 0) ? true : false;
+  common.result(res, success);
+};
 const packageCC = async (req, res) => {
   const {
     chaincodeName,
@@ -22,10 +32,11 @@ const packageCC = async (req, res) => {
 const install = async (req, res) => {
   const {
     chaincodeName,
+    chaincodePath,
     orgname,
     peerIndex
   } = req.body;
-  const cmd = `${env} ./scripts/install_chaincode.sh "${chaincodeName}" "${peerIndex}" "${orgname}"`;
+  const cmd = `${env} ./scripts/install_chaincode.sh "${chaincodeName}" "${chaincodePath}" "${peerIndex}" "${orgname}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success);
@@ -50,10 +61,11 @@ const approveForMyOrg = async (req, res) => {
     channelName,
     packageId,
     signaturePolicy,
-    ordererAddress
+    ordererAddress,
+    initRequired
   } = req.body;
   process.env.SIGNATURE_POLICY = signaturePolicy;
-  const cmd = `${env} ./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgname}" "${channelName}" "${packageId}" "${chaincodeName}" "${ordererAddress}"`;
+  const cmd = `${env} ./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgname}" "${channelName}" "${packageId}" "${chaincodeName}" "${ordererAddress}" "${initRequired}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success);
@@ -65,9 +77,10 @@ const commitChaincodeDefinition = async (req, res) => {
     chaincodeVersion,
     channelName,
     target,
-    ordererAddress
+    ordererAddress,
+    initRequired
   } = req.body;
-  const cmd = `${env} ./scripts/commit_chaincode.sh "${chaincodeVersion}" "${chaincodeName}" "${channelName}" "${ordererAddress}" ${target}`;
+  const cmd = `${env} ./scripts/commit_chaincode.sh "${chaincodeVersion}" "${chaincodeName}" "${channelName}" "${ordererAddress}" "${initRequired}" ${target}`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success);
@@ -94,6 +107,7 @@ const invokeCLI = async (req, res) => {
   common.result(res, success);
 };
 
+exports.packageExternalCC = packageExternalCC;
 exports.packageCC = packageCC;
 exports.install = install;
 exports.queryInstalled = queryInstalled;

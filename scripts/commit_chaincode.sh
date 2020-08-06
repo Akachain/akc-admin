@@ -8,6 +8,11 @@ VERSION=$1
 CHAINCODENAME=$2
 CHANNEL_NAME=$3
 ORDERER_ADDRESS=$4
+INIT_REQUIRED_FLAG=$5
+if [ "$INIT_REQUIRED_FLAG" == "1" ]; then
+  INIT_REQUIRED="--init-required"
+fi
+shift
 shift
 shift
 shift
@@ -20,12 +25,12 @@ verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to u
 # it using the "-o" option
 if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
   set -x
-  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} --init-required >&log.txt
+  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} ${INIT_REQUIRED} >&log.txt
   res=$?
   set +x
 else
   set -x
-  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} --init-required >&log.txt
+  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} ${INIT_REQUIRED} >&log.txt
   res=$?
   set +x
 fi
