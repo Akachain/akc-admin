@@ -17,9 +17,7 @@ while [ "$#" -gt 0 ]; do
     res=$?
     set +x
     cat log.txt
-    verifyResult $res "Chaincode installation on peer${PEER}.org${ORG} has failed"
-    echo "===================== Chaincode is installed on peer${PEER}.org${ORG} ===================== "
-    echo
+    verifyResult $res
     # shift by two to get the next pair of peer/org parameters
     shift
     shift

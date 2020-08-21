@@ -13,6 +13,5 @@ res=$?
 # set +x
 # cat log.txt
 PACKAGE_ID=`sed -n '/Package/{s/^Package ID: //; s/, Label:.*$//; p;}' log.txt`
-# verifyResult $res "Query installed on peer${PEER}.org${ORG} has failed"
 verifyResult $res
 echo ${PACKAGE_ID}

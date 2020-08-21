@@ -34,6 +34,4 @@ else
   set +x
 fi
 cat log.txt
-verifyResult $res "Chaincode definition approved on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' failed"
-echo "===================== Chaincode definition approved on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' ===================== "
-echo
+verifyResult $res

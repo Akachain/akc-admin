@@ -22,6 +22,4 @@ peer lifecycle chaincode package ${CHAINCODE_NAME}.tar.gz --path ${CHAINCODE_PAT
 res=$?
 set +x
 cat log.txt
-verifyResult $res "Chaincode packaging on peer${PEER}.${ORG} has failed"
-echo "===================== Chaincode is packaged on peer${PEER}.${ORG} ===================== "
-echo
+verifyResult $res

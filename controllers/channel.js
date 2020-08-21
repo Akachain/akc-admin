@@ -15,7 +15,7 @@ async function create(req, res) {
   const cmd = `${env} ./scripts/create_channel.sh "${peerIndex}" "${orgName}" "${channelName}" "${ordererAddress}" "${channelConfig}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  common.result(res, success);
+  common.result(res, success, result.stdout);
 }
 
 async function join(req, res) {
@@ -27,7 +27,7 @@ async function join(req, res) {
   const cmd = `${env} ./scripts/join_channel.sh "${peerIndex}" "${orgName}" "${channelName}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  common.result(res, success);
+  common.result(res, success, result.stdout);
 }
 
 // // eslint-disable-next-line consistent-return

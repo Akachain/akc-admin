@@ -18,7 +18,7 @@ shift
 shift
 parsePeerConnectionParameters $@
 res=$?
-verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to uneven number of peer and org parameters "
+verifyResult $res
 CCARGS='{"function":"'${FUNCTION_NAME}'","Args":['${ARGS}']}'
 if [ "${IS_INIT}" -eq "1" ]; then
   INIT_ARG="--isInit"
@@ -41,6 +41,4 @@ else
   set +x
 fi
 cat log.txt
-verifyResult $res "Invoke execution on $PEERS failed "
-echo "===================== Invoke transaction successful on $PEERS on channel '$CHANNEL_NAME' ===================== "
-echo
+verifyResult $res

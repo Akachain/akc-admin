@@ -16,7 +16,7 @@ const updateAnchorPeer = async (req, res) => {
   const cmd = `${env} ./scripts/update_anchor_peer.sh "${peerIndex}" "${orgName}" "${channelName}" "${anchorConfigPath}" "${ordererAddress}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
-  common.result(res, success);
+  common.result(res, success, result.stdout);
 };
 
 exports.updateAnchorPeer = updateAnchorPeer;

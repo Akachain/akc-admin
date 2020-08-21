@@ -15,6 +15,4 @@ peer channel join -b $CHANNEL_NAME.block >&log.txt
 res=$?
 set +x
 cat log.txt
-verifyResult $res "Join channel failed"
-echo "===================== Org join Channel '$CHANNEL_NAME' succeed ===================== "
-echo
+verifyResult $res

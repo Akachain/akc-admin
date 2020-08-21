@@ -23,6 +23,4 @@ else
   set +x
 fi
 cat log.txt
-verifyResult $res "Channel creation failed"
-echo "===================== Channel '$CHANNEL_NAME' created ===================== "
-echo
+verifyResult $res

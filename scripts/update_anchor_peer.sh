@@ -23,6 +23,4 @@ else
   set +x
 fi
 cat log.txt
-verifyResult $res "Anchor peer update failed"
-echo "===================== Anchor peers updated for org '$CORE_PEER_LOCALMSPID' on channel '$CHANNEL_NAME' ===================== "
-echo
+verifyResult $res

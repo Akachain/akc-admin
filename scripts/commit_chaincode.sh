@@ -19,7 +19,7 @@ shift
 shift
 parsePeerConnectionParameters $@
 res=$?
-verifyResult $res "Invoke transaction failed on channel '$CHANNEL_NAME' due to uneven number of peer and org parameters "
+verifyResult $res
 # while 'peer chaincode' command can get the orderer endpoint from the
 # peer (if join was successful), let's supply it directly as we know
 # it using the "-o" option
@@ -35,6 +35,4 @@ else
   set +x
 fi
 cat log.txt
-verifyResult $res "Chaincode definition commit failed on peer${PEER}.org${ORG} on channel '$CHANNEL_NAME' failed"
-echo "===================== Chaincode definition committed on channel '$CHANNEL_NAME' ===================== "
-echo
+verifyResult $res

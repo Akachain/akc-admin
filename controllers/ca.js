@@ -55,6 +55,7 @@ async function registerUser(req, res) {
       msg = `An identity for the user ${user.userName} already exists in the wallet`;
       logger.debug(msg);
       common.succeeded(res, msg);
+      return;
     }
 
     // Check to see if we've already enrolled the admin user.
@@ -64,6 +65,7 @@ async function registerUser(req, res) {
       logger.error(msg);
       logger.error('Run the enrollAdmin.js application before retrying');
       common.failed(res, msg);
+      return;
     }
 
     // build a user object for authenticating with the CA
@@ -92,11 +94,12 @@ async function registerUser(req, res) {
     msg = `Successfully registered and enrolled admin user "${user.userName}" and imported it into the wallet`;
     logger.debug(msg);
     common.succeeded(res, msg);
-    // return akcSDK.registerUser(user)
+    return;
   } catch (err) {
     logger.error(`Failed to register user ${user.userName} for the ${orgName}: ${err.stack ? err.stack : err}`);
     msg = err.toString();
     common.failed(res, msg);
+    return;
   }
 }
 
@@ -136,6 +139,7 @@ async function enrollAdmin(req, res) {
       msg = `An identity for the admin user ${caAdminUser} already exists in the wallet`;
       logger.debug(msg);
       common.succeeded(res, msg);
+      return;
     }
 
     // Enroll the admin user, and import the new identity into the wallet.
@@ -155,33 +159,15 @@ async function enrollAdmin(req, res) {
     msg = `Successfully enrolled admin user ${caAdminUser} and imported it into the wallet`;
     logger.debug(msg);
     common.succeeded(res, msg);
+    return;
 
   } catch (error) {
     msg = `Failed to enroll admin user ${caAdminUser}: ${error}`;
     console.error(msg);
     common.failed(res, msg);
+    return;
   }
 }
 
-// async function enroll(req) {
-//   let user = {
-//     orgName: req.body.orgname,
-//     userName: req.body.username,
-//     enrollmentSecret: req.body.password,
-//   }
-//   user.userName = user.userName || orgName
-//   user.enrollmentSecret = user.enrollmentSecret || `${user.userName}pw`
-//   try {
-//     return akcSDK.enrollUser(user)
-//   } catch (err) {
-//     logger.error(`Failed to enroll user ${user.userName} for the ${orgName}: ${err.stack ? err.stack : err}`);
-//     throw new Error(`Failed to enroll user ${user.userName} for the ${orgName}: ${err.message}`);
-//   }
-// }
-
-// exports = {
-//   registerUser,
-//   enrollAdmin
-// };
 exports.registerUser = registerUser;
 exports.enrollAdmin = enrollAdmin;
