@@ -1,3 +1,4 @@
+'use strict';
 const filePath = './logs/';
 const log4js = require('log4js');
 

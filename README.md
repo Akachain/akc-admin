@@ -3,119 +3,141 @@
 
 The Akachain Admin Tool provides RESTful API for an administrator to interact with a Hyperledger Fabric network. The list of supported functions are:
 
+### Enroll Admin
+```
+curl --location --request POST 'http://localhost:4001/api/v2/cas/enrollAdmin' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+	"adminName": 	"admin",
+  "adminPassword": 	"adminpw",
+  "orgName": "Org1"
+}'
+
+```
 ### Register User
 ```
-curl -s -X POST http://IP_Address:4001/registerUser -H "content-type: application/json"   -d '{
-  "orgname":"{ORG_NAME}",
-  "username":"{USER_NAME}",
-  "role":"{ROLE}",
-  "maxEnrollments":"{MAX_ENROLLMENTS}",
-  "affiliation":"{AFFILIATION}",
-  "attrs":"{ATTRS}"
+curl --location --request POST 'http://localhost:4001/api/v2/cas/registerUser' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+	"orgName": 	"Org1",
+  "affiliation": "Org1.affiliation1",
+  "userName": "appUser",
+  "adminName": "admin",
+  "role": "client"
 }'
-
-```
-
-### Enroll User
-```
-curl -s -X POST http://IP_Address:4001/enrollUser -H "content-type: application/json"   -d '{
-  "orgname":"{ORG_NAME}",
-  "username":"{USER_NAME}",
-  "password":"{ENROLLMENT_SECRET}"
-}'
-
 ```
 ### Create Channel
 ```
-curl -s -X POST http://IP_Address:4001/channels -H "content-type: application/json"   -d '{
-  "channelName":"{CHANNEL_NAME}",
-  "channelConfigPath":"{CHANEL_CONFIG_PATH}",
-  "orgname":"{ORG_NAME}"
+curl --location --request POST 'http://localhost:4001/api/v2/channels/create' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "orgName": "Org1",
+	"peerIndex": "0",
+	"channelName": "mychannel",
+	"ordererAddress": "orderer.example.com:7050",
+	"channelConfig": "/shared/channel-artifacts/mychannel.tx"
 }'
-
 ```
 ### Join Channel
 ```
-curl -s -X POST http://IP_Address:4001/joinchannel -H "content-type: application/json"   -d '{
-  "orgname":"{ORG_NAME}",
-  "channelName":"{CHANNEL_NAME}"
+curl --location --request POST 'http://localhost:4001/api/v2/channels/join' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "orgName": "Org1",
+	"peerIndex": "0",
+	"channelName": "mychannel"
 }'
-
 ```
-### Get Genesis Block
+### Update anchor peer
 ```
-curl -s -X POST http://IP_Address:4001/getGenesisBlock -H "content-type: application/json"   -d '{
-  "orgname":"{ORG_NAME}",
-  "channelName":"{CHANNEL_NAME}"
+curl --location --request POST 'http://localhost:4001/api/v2/peers/updateAnchorPeer' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+  "orgName": "Org1",
+	"peerIndex": "0",
+	"channelName": "mychannel",
+	"ordererAddress": "orderer.example.com:7050",
+	"anchorConfigPath": "/shared/channel-artifacts/Org1MSPanchors.tx"
 }'
-
 ```
-
+### Package Chaincode
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/packageCC \
+--header 'content-type: application/json' \
+--data-raw '{
+    "orgname":"Org1",
+    "chaincodePath":"github.com/hyperledger/fabric-samples/chaincode/abstore/go",
+    "chaincodeName":"abstore",
+    "chaincodeVersion":"1",
+    "chaincodeType":"golang",
+    "peerIndex": "0"
+}'
+```
 ### Install Chaincode
 ```
-curl -s -X POST http://IP_Address:4001/chaincodes -H "content-type: application/json"   -d '{
-  "orgname":"{ORG_NAME}",
-  "chaincodeId":"{CHAINCODE_ID}",
-  "chaincodePath":"{CHAINCODE_RELATIVE_PATH}",
-  "chaincodeVersion":"{UNIQUE_VERSION}",
-  "chaincodeType":"golang"
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/install \
+--header 'content-type: application/json' \
+--data-raw '{
+    "orgname":"Org1",
+    "chaincodeName":"abstore",
+    "peerIndex": "0"
+}'
+```
+### Query Installed Chaincode
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/queryInstalled \
+--header 'content-type: application/json' \
+--data-raw '{
+    "orgname":"Org1",
+    "peerIndex": "0"
+}'
+```
+### Approve Chaincode For My Org
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/approveForMyOrg \
+--header 'content-type: application/json' \
+--data-raw '{
+    "orgname":"Org1",
+    "peerIndex": "0",
+    "chaincodeName": "abstore",
+    "chaincodeVersion": 1,
+    "channelName": "mychannel",
+    "packageId": "abstore_1:6b792d529cbd21b2e0dc5f91404154235bf2cddcb073c59e21780ef419a6c23e",
+    "ordererAddress": "orderer.example.com:7050"
+}'
+```
+### Commit Chaincode Definition
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/commitChaincodeDefinition \
+--header 'content-type: application/json' \
+--data-raw '{
+    "chaincodeName": "abstore",
+    "chaincodeVersion": 1,
+    "channelName": "mychannel",
+    "target": "0 Org1",
+    "ordererAddress": "orderer.example.com:7050"
+}'
+```
+### Invoke by CLI
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/invokeCLI \
+--header 'content-type: application/json' \
+--data-raw '{
+    "chaincodeName": "abstore",
+    "channelName": "mychannel",
+    "target": "0 Org1 0 Org2",
+    "ordererAddress": "orderer.example.com:7050",
+    "isInit": "1"
 }'
 
-```
-### Init Chaincode
-```
-curl -s -X POST http://IP_Address:4001/initchaincodes -H "content-type: application/json" -d '{
-  "orgname":"{ORG_NAME}",
-  "channelName":"{CHANNEL_NAME}",
-  "chaincodeId":"{CHAINCODE_ID}",
-  "chaincodeVersion":"{UNIQUE_VERSION}",
-  "chaincodeType":"golang",
-  "args": {ARRAY_ARGUMENT},
-  "endorsementPolicy": {ENDORSEMENT_POLICY}
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/invokeCLI \
+--header 'content-type: application/json' \
+--data-raw '{
+    "chaincodeName": "abstore",
+    "channelName": "mychannel",
+    "target": "0 Org1 0 Org2",
+    "ordererAddress": "orderer.example.com:7050",
+    "isInit": "0"
 }'
 ```
 
-### Upgrade Chaincode
-```
-curl -s -X POST http://IP_Address:4001/upgradeChainCode -H "content-type: application/json" -d '{
-  "orgname":"{ORG_NAME}",
-  "channelName":"{CHANNEL_NAME}",
-  "chaincodeId":"{CHAINCODE_ID}",
-  "chaincodeVersion":"{UNIQUE_VERSION}",
-  "chaincodeType":"golang",
-  "args": {ARRAY_ARGUMENT},
-  "endorsementPolicy": {ENDORSEMENT_POLICY}
-}'
-```
-
-### Update Anchor Peer
-```
-curl -s -X POST http://IP_Address:4001/updateAnchorPeer -H "content-type: application/json" -d '{
-  "orgname":"{ORG_NAME}",
-  "username":"{USER_NAME}",
-  "channelName":"{CHANNEL_NAME}",
-  "configUpdatePath":"{CONFIG_UPDATE_PATH}"
-}'
-```
-
-### Invoke Chaincode
-```
-curl -s -X POST http://IP_Address:4001/invokeChainCode -H "content-type: application/json" -d '{
-  "orgname":"{ORG_NAME}",
-  "channelName":"{CHANNEL_NAME}",
-  "chaincodeId":"{CHAINCODE_ID}",
-  "fcn":"{FUNCTION_NAME}",
-  "args": {ARRAY_ARGUMENT}
-}'
-```
-
-### Query Block By Block Number Or Transaction ID
-```
-curl -s -X POST http://IP_Address:4001/getBlock -H "content-type: application/json" -d '{
-  "orgname":"{ORG_NAME}",
-  "username":"{USER_NAME}",
-  "channelName":"{CHANNEL_NAME}",
-  "blockNumber":"{BLOCK_NUMBER}",
-  "txId": {TRANSACTION_ID}
-}'
-```
