@@ -20,11 +20,12 @@ const packageCC = async (req, res) => {
     chaincodeName,
     chaincodeVersion,
     chaincodePath,
+    chaincodeModulePath,
     chaincodeType,
     orgname,
     peerIndex
   } = req.body;
-  const cmd = `${env} ./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}"`;
+  const cmd = `${env} ./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}" "${chaincodeModulePath}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);

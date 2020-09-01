@@ -39,5 +39,9 @@ COPY . /data/app
 #Default on container port is 3000
 EXPOSE 4001
 
+#Chaincode seting
+RUN mkdir -p /go/src/
+ENV GOPATH /go
+
 CMD npm start
 # CMD tail -f /dev/null
