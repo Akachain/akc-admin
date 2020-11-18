@@ -32,7 +32,6 @@ WORKDIR /data/app
 RUN mkdir node_modules
 # COPY fabric-sdk-node/fabric-client /data/app/node_modules
 COPY package.json /data/app
-COPY .npmrc /data/app
 RUN npm install && npm cache clean --force
 RUN apk add curl
 COPY . /data/app
