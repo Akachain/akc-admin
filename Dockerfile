@@ -1,4 +1,4 @@
-FROM hyperledger/fabric-tools:2.2.0
+FROM akachain/fabric-tools:amd64-2.2.0-fabric-sp-mongodb
 
 RUN apk add  --no-cache nodejs npm
 RUN node -v
