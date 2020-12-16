@@ -1,4 +1,4 @@
-FROM hyperledger/fabric-tools:2.2.0
+FROM akachain/fabric-tools:amd64-2.2.0-fabric-sp-mongodb
 
 RUN apk update && apk add --update --no-cache python3 make g++
 RUN apk add  --no-cache nodejs npm
@@ -33,7 +33,6 @@ WORKDIR /data/app
 RUN mkdir node_modules
 # COPY fabric-sdk-node/fabric-client /data/app/node_modules
 COPY package.json /data/app
-# COPY .npmrc /data/app
 RUN npm install && npm cache clean --force
 RUN apk add curl
 COPY . /data/app

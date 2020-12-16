@@ -8,8 +8,8 @@ The Akachain Admin Tool provides RESTful API for an administrator to interact wi
 curl --location --request POST 'http://localhost:4001/api/v2/cas/enrollAdmin' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-	"adminName": 	"admin",
-  "adminPassword": 	"adminpw",
+  "adminName":   "admin",
+  "adminPassword":   "adminpw",
   "orgName": "Org1"
 }'
 
@@ -19,7 +19,7 @@ curl --location --request POST 'http://localhost:4001/api/v2/cas/enrollAdmin' \
 curl --location --request POST 'http://localhost:4001/api/v2/cas/registerUser' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-	"orgName": 	"Org1",
+  "orgName": "Org1",
   "affiliation": "Org1.affiliation1",
   "userName": "appUser",
   "adminName": "admin",
@@ -32,10 +32,10 @@ curl --location --request POST 'http://localhost:4001/api/v2/channels/create' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "orgName": "Org1",
-	"peerIndex": "0",
-	"channelName": "mychannel",
-	"ordererAddress": "orderer.example.com:7050",
-	"channelConfig": "/shared/channel-artifacts/mychannel.tx"
+  "peerIndex": "0",
+  "channelName": "mychannel",
+  "ordererAddress": "orderer.example.com:7050",
+  "channelConfig": "/shared/channel-artifacts/mychannel.tx"
 }'
 ```
 ### Join Channel
@@ -55,10 +55,10 @@ curl --location --request POST 'http://localhost:4001/api/v2/peers/updateAnchorP
 --header 'Content-Type: application/json' \
 --data-raw '{
   "orgName": "Org1",
-	"peerIndex": "0",
-	"channelName": "mychannel",
-	"ordererAddress": "orderer.example.com:7050",
-	"anchorConfigPath": "/shared/channel-artifacts/Org1MSPanchors.tx"
+  "peerIndex": "0",
+  "channelName": "mychannel",
+  "ordererAddress": "orderer.example.com:7050",
+  "anchorConfigPath": "/shared/channel-artifacts/Org1MSPanchors.tx"
 }'
 ```
 ### Package Chaincode
@@ -90,8 +90,8 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/install \
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/queryInstalled \
 --header 'content-type: application/json' \
 --data-raw '{
-    "orgname":"Org1",
-    "peerIndex": "0"
+  "orgname":"Org1",
+  "peerIndex": "0"
 }'
 ```
 ### Approve Chaincode For My Org

@@ -7,7 +7,7 @@ const cors = require('cors');
 const loggerCommon = require('./utils/logger');
 const routeChannel = require('./routes/channel');
 const routeChaincode = require('./routes/chaincode');
-const routePeer = require('./routes/peer');
+const routePeer = require('./routes/peer');
 const routeCA = require('./routes/ca');
 
 const logger = loggerCommon.getLogger('admin-service');
