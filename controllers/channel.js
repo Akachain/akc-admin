@@ -22,9 +22,10 @@ async function join(req, res) {
   const {
     orgName,
     peerIndex,
-    channelName
+    channelName,
+    ordererAddress
   } = req.body;
-  const cmd = `${env} ./scripts/join_channel.sh "${peerIndex}" "${orgName}" "${channelName}"`;
+  const cmd = `${env} ./scripts/join_channel.sh "${peerIndex}" "${orgName}" "${channelName}" "${ordererAddress}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);

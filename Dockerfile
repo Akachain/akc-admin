@@ -1,5 +1,6 @@
 FROM akachain/fabric-tools:amd64-2.2.0-fabric-sp-mongodb
 
+RUN apk update && apk add --update --no-cache python3 make g++
 RUN apk add  --no-cache nodejs npm
 RUN node -v
 # Telnet

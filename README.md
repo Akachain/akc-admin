@@ -45,7 +45,8 @@ curl --location --request POST 'http://localhost:4001/api/v2/channels/join' \
 --data-raw '{
   "orgName": "Org1",
   "peerIndex": "0",
-  "channelName": "mychannel"
+  "channelName": "mychannel",
+  "ordererAddress": "orderer.example.com:7050"
 }'
 ```
 ### Update anchor peer
@@ -66,8 +67,8 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/packageCC
 --header 'content-type: application/json' \
 --data-raw '{
   "orgname":"Org1",
-  "chaincodePath":"github.com/hyperledger/fabric-samples/chaincode/abstore/go",
-  "chaincodeName":"abstore",
+  "chaincodePath":"/chaincodes/fabcar",
+  "chaincodeName":"fabcar",
   "chaincodeVersion":"1",
   "chaincodeType":"golang",
   "peerIndex": "0"
@@ -79,7 +80,8 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/install \
 --header 'content-type: application/json' \
 --data-raw '{
   "orgname":"Org1",
-  "chaincodeName":"abstore",
+  "chaincodeName":"fabcar",
+  "chaincodePath":"fabcar.tar.gz",
   "peerIndex": "0"
 }'
 ```
@@ -99,10 +101,10 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/approveFo
 --data-raw '{
   "orgname":"Org1",
   "peerIndex": "0",
-  "chaincodeName": "abstore",
+  "chaincodeName": "fabcar",
   "chaincodeVersion": 1,
   "channelName": "mychannel",
-  "packageId": "abstore_1:6b792d529cbd21b2e0dc5f91404154235bf2cddcb073c59e21780ef419a6c23e",
+  "packageId": "fabcar_1:6b792d529cbd21b2e0dc5f91404154235bf2cddcb073c59e21780ef419a6c23e",
   "ordererAddress": "orderer.example.com:7050"
 }'
 ```
@@ -111,7 +113,7 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/approveFo
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/commitChaincodeDefinition \
 --header 'content-type: application/json' \
 --data-raw '{
-  "chaincodeName": "abstore",
+  "chaincodeName": "fabcar",
   "chaincodeVersion": 1,
   "channelName": "mychannel",
   "target": "0 Org1",
@@ -123,7 +125,7 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/commitCha
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/invokeCLI \
 --header 'content-type: application/json' \
 --data-raw '{
-  "chaincodeName": "abstore",
+  "chaincodeName": "fabcar",
   "channelName": "mychannel",
   "target": "0 Org1 0 Org2",
   "ordererAddress": "orderer.example.com:7050",
@@ -133,7 +135,7 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/invokeCLI
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/invokeCLI \
 --header 'content-type: application/json' \
 --data-raw '{
-  "chaincodeName": "abstore",
+  "chaincodeName": "fabcar",
   "channelName": "mychannel",
   "target": "0 Org1 0 Org2",
   "ordererAddress": "orderer.example.com:7050",
