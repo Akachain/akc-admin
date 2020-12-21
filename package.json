@@ -11,6 +11,7 @@
   "keywords": [],
   "license": "GNU-3.0",
   "dependencies": {
+    "js-yaml": "3.14.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.3",
     "express": "^4.17.1",

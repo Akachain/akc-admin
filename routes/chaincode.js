@@ -11,5 +11,7 @@ router.route('/queryInstalled').post(chaincode.queryInstalled);
 router.route('/approveForMyOrg').post(chaincode.approveForMyOrg);
 router.route('/commitChaincodeDefinition').post(chaincode.commitChaincodeDefinition);
 router.route('/invokeCLI').post(chaincode.invokeCLI);
+router.route('/invoke').post(chaincode.invoke);
+router.route('/query').post(chaincode.query);
 
 module.exports = router;
