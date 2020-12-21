@@ -142,4 +142,24 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/invokeCLI
   "isInit": "0"
 }'
 ```
+### Invoke and Query by Fabric-network (SDK)
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/invoke \
+--header 'content-type: application/json' \
+--data-raw '{
+  "chaincodeName": "fabcar",
+  "channelName": "mychannel",
+  "userName": "appUser",
+  "fcn": "createCar",
+  "args": ["CAR0", "a", "b", "c", "d"]
+}'
 
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/query \
+--header 'content-type: application/json' \
+--data-raw '{
+  "chaincodeName": "fabcar",
+  "channelName": "mychannel",
+  "userName": "appUser",
+  "args": []
+}'
+```
