@@ -38,10 +38,9 @@ const install = async (req, res) => {
   const {
     chaincodeName,
     chaincodePath,
-    orgname,
-    peerIndex
+    target
   } = req.body;
-  const cmd = `${env} ./scripts/install_chaincode.sh "${chaincodeName}" "${chaincodePath}" "${peerIndex}" "${orgname}"`;
+  const cmd = `${env} ./scripts/install_chaincode.sh "${chaincodeName}" "${chaincodePath}" ${target}`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);
@@ -49,9 +48,11 @@ const install = async (req, res) => {
 const queryInstalled = async (req, res) => {
   const {
     orgname,
-    peerIndex
+    peerIndex,
+    chaincodeName,
+    chaincodeVersion
   } = req.body;
-  const cmd = `${env} ./scripts/query_installed.sh "${peerIndex}" "${orgname}"`;
+  const cmd = `${env} ./scripts/query_installed.sh "${peerIndex}" "${orgname}" "${chaincodeName}" "${chaincodeVersion}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout, [{ packageId: result.stdout.replace('\n', '')}] );

@@ -90,8 +90,9 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/install \
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/queryInstalled \
 --header 'content-type: application/json' \
 --data-raw '{
-  "orgname":"Org1",
-  "peerIndex": "0"
+  "target": "0 Org1",
+  "chaincodeName": "fabcar",
+  "chaincodeVersion": "1"
 }'
 ```
 ### Approve Chaincode For My Org
