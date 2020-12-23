@@ -121,30 +121,28 @@ const invoke = async (req, res) => {
     args
   } = req.body;
 
-
-  // Create a new file system based wallet for managing identities.
-  const walletPath = path.join(__dirname, '../wallet');
-  const wallet = await Wallets.newFileSystemWallet(walletPath);
-
-  // Check to see if we've already enrolled the user.
-  const identity = await wallet.get(userName);
-  if (!identity) {
-      console.log(`An identity for the user "${userName}" does not exist in the wallet`);
-      console.log('Run the registerUser.js application before retrying');
-      return;
-  }
-
-  const connectionProfile = yaml.safeLoad(fs.readFileSync('./artifacts/network-config.yaml', 'utf8'));
-  const gateway = new Gateway();
-  await gateway.connect(connectionProfile, { wallet, identity: userName, discovery: { enabled: false, asLocalhost: false } });
-
-  // Get the network (channel) our contract is deployed to.
-  const network = await gateway.getNetwork(channelName);
-
-  // Get the contract from the network.
-  const contract = network.getContract(chaincodeName);
-
   try {
+    // Create a new file system based wallet for managing identities.
+    const walletPath = path.join(__dirname, '../wallet');
+    const wallet = await Wallets.newFileSystemWallet(walletPath);
+
+    // Check to see if we've already enrolled the user.
+    const identity = await wallet.get(userName);
+    if (!identity) {
+        console.log(`An identity for the user "${userName}" does not exist in the wallet`);
+        console.log('Please enroll this user!');
+        return;
+    }
+
+    const connectionProfile = yaml.safeLoad(fs.readFileSync('./artifacts/network-config.yaml', 'utf8'));
+    const gateway = new Gateway();
+    await gateway.connect(connectionProfile, { wallet, identity: userName, discovery: { enabled: false, asLocalhost: false } });
+
+    // Get the network (channel) our contract is deployed to.
+    const network = await gateway.getNetwork(channelName);
+
+    // Get the contract from the network.
+    const contract = network.getContract(chaincodeName);
     const results = await contract.submitTransaction(fcn, ...args);
     common.result(res, true, results.toString('utf-8')); 
   } catch (e) {
@@ -174,7 +172,7 @@ const query = async (req, res) => {
   const identity = await wallet.get(userName);
   if (!identity) {
       console.log(`An identity for the user "${userName}" does not exist in the wallet`);
-      console.log('Run the registerUser.js application before retrying');
+      console.log('Please enroll this user!');
       return;
   }
 
