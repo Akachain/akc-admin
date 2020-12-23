@@ -23,14 +23,20 @@ verifyResult $res
 # while 'peer chaincode' command can get the orderer endpoint from the
 # peer (if join was successful), let's supply it directly as we know
 # it using the "-o" option
+
+# Query latest commited chaincode seq
+SEQ=`peer lifecycle chaincode querycommitted -C ${CHANNEL_NAME} -n ${CHAINCODENAME} -O json | jq .sequence`
+if [ "$SEQ" == "" ]; then
+  SEQ=0
+fi
 if [ -z "$CORE_PEER_TLS_ENABLED" -o "$CORE_PEER_TLS_ENABLED" = "false" ]; then
   set -x
-  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} ${INIT_REQUIRED} >&log.txt
+  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence $(expr ${SEQ} + 1) ${INIT_REQUIRED} >&log.txt
   res=$?
   set +x
 else
   set -x
-  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence ${VERSION} ${INIT_REQUIRED} >&log.txt
+  peer lifecycle chaincode commit -o $ORDERER_ADDRESS --tls $CORE_PEER_TLS_ENABLED --cafile $ORDERER_CA --channelID $CHANNEL_NAME --name $CHAINCODENAME $PEER_CONN_PARMS --version ${VERSION} --sequence $(expr ${SEQ} + 1) ${INIT_REQUIRED} >&log.txt
   res=$?
   set +x
 fi
