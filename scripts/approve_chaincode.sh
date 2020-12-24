@@ -49,5 +49,5 @@ else
   res=$?
   set +x
 fi
-cat log.txt
+sed -n '$p' log.txt
 verifyResult $res

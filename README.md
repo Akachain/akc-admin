@@ -66,7 +66,7 @@ curl --location --request POST 'http://localhost:4001/api/v2/peers/updateAnchorP
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/packageCC \
 --header 'content-type: application/json' \
 --data-raw '{
-  "orgname":"Org1",
+  "orgName":"Org1",
   "chaincodePath":"/chaincodes/fabcar",
   "chaincodeName":"fabcar",
   "chaincodeVersion":"1",
@@ -79,10 +79,9 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/packageCC
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/install \
 --header 'content-type: application/json' \
 --data-raw '{
-  "orgname":"Org1",
   "chaincodeName":"fabcar",
   "chaincodePath":"fabcar.tar.gz",
-  "peerIndex": "0"
+  "target": "0 Org1"
 }'
 ```
 ### Query Installed Chaincode
@@ -90,7 +89,8 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/install \
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/queryInstalled \
 --header 'content-type: application/json' \
 --data-raw '{
-  "target": "0 Org1",
+  "orgName":"Org1",
+  "peerIndex": "0",
   "chaincodeName": "fabcar",
   "chaincodeVersion": "1"
 }'
@@ -100,7 +100,7 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/queryInst
 curl --location --request POST http://localhost:4001/api/v2/chaincodes/approveForMyOrg \
 --header 'content-type: application/json' \
 --data-raw '{
-  "orgname":"Org1",
+  "orgName":"Org1",
   "peerIndex": "0",
   "chaincodeName": "fabcar",
   "chaincodeVersion": 1,
