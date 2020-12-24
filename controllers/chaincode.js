@@ -12,9 +12,9 @@ const env = common.getEnv();
 const packageExternalCC = async (req, res) => {
   const {
     chaincodeName,
-    orgname,
+    orgName,
   } = req.body;
-  const cmd = `${env} ./scripts/package_external_cc.sh "${chaincodeName}" "${orgname}"`;
+  const cmd = `${env} ./scripts/package_external_cc.sh "${chaincodeName}" "${orgName}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);
@@ -26,10 +26,10 @@ const packageCC = async (req, res) => {
     chaincodePath,
     chaincodeModulePath,
     chaincodeType,
-    orgname,
+    orgName,
     peerIndex
   } = req.body;
-  const cmd = `${env} ./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgname}" "${peerIndex}" "${chaincodeModulePath}"`;
+  const cmd = `${env} ./scripts/package_chaincode.sh "${chaincodeName}" "${chaincodeVersion}" "${chaincodePath}" "${chaincodeType}" "${orgName}" "${peerIndex}" "${chaincodeModulePath}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);
@@ -47,12 +47,12 @@ const install = async (req, res) => {
 };
 const queryInstalled = async (req, res) => {
   const {
-    orgname,
+    orgName,
     peerIndex,
     chaincodeName,
     chaincodeVersion
   } = req.body;
-  const cmd = `${env} ./scripts/query_installed.sh "${peerIndex}" "${orgname}" "${chaincodeName}" "${chaincodeVersion}"`;
+  const cmd = `${env} ./scripts/query_installed.sh "${peerIndex}" "${orgName}" "${chaincodeName}" "${chaincodeVersion}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout, [{ packageId: result.stdout.replace('\n', '')}] );
@@ -60,7 +60,7 @@ const queryInstalled = async (req, res) => {
 
 const approveForMyOrg = async (req, res) => {
   const {
-    orgname,
+    orgName,
     peerIndex,
     chaincodeName,
     chaincodeVersion,
@@ -71,7 +71,7 @@ const approveForMyOrg = async (req, res) => {
     initRequired
   } = req.body;
   process.env.SIGNATURE_POLICY = signaturePolicy;
-  const cmd = `${env} ./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgname}" "${channelName}" "${packageId}" "${chaincodeName}" "${ordererAddress}" "${initRequired}"`;
+  const cmd = `${env} ./scripts/approve_chaincode.sh "${chaincodeVersion}" "${peerIndex}" "${orgName}" "${channelName}" "${packageId}" "${chaincodeName}" "${ordererAddress}" "${initRequired}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);

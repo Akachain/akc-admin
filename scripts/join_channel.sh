@@ -23,5 +23,5 @@ verifyResult $res "Fetching config block from orderer has Failed"
 peer channel join -b $CHANNEL_NAME.block >&log.txt
 res=$?
 set +x
-cat log.txt
+sed -n '$p' log.txt
 verifyResult $res

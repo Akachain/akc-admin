@@ -16,7 +16,7 @@ while [ "$#" -gt 0 ]; do
     peer lifecycle chaincode install $CHAINCODE_PATH >&log.txt
     res=$?
     set +x
-    cat log.txt
+    sed -n '$p' log.txt
     verifyResult $res
     # shift by two to get the next pair of peer/org parameters
     shift
