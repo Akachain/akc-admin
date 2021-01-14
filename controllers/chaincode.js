@@ -149,9 +149,6 @@ const invoke = async (req, res) => {
   } catch (e) {
     console.log(e)
     common.result(res, false, e.message);
-  } finally{
-    // Disconnect from the gateway.
-    await gateway.disconnect();
   }
 };
 

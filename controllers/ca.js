@@ -6,6 +6,7 @@ const {
 const FabricCAServices = require('fabric-ca-client');
 const fs = require('fs');
 const path = require('path');
+const yaml = require('js-yaml');
 const logger = require('../utils/logger.js').getLogger('ca-service');
 const common = require('../utils/common');
 
@@ -19,13 +20,13 @@ async function registerUser(req, res) {
   // TODO: Verify INPUT
   const orgName = req.body.orgName;
   const orgDomain = req.body.orgDomain || req.body.orgName;
-  const caAdminUser = req.body.adminName || `admin-${orgName}`;
+  const caAdminUser = req.body.adminName || `ica-${orgName}-admin`;
   let user = {
     userName: req.body.userName,
     role: req.body.role,
     // maxEnrollments: req.body.maxEnrollments,
     affiliation: req.body.affiliation,
-    // attrs: req.body.attrs
+    attrs: req.body.attrs
   };
   user.userName = user.userName || orgName;
   user.affiliation = user.affiliation || 'org1.department1';
@@ -37,11 +38,10 @@ async function registerUser(req, res) {
 
   let msg;
   try {
-    const ccpPath = path.resolve(__dirname, '..', connectionProfilePath);
-    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+    const connectionProfile = yaml.safeLoad(fs.readFileSync('./artifacts/network-config.yaml', 'utf8'));
 
     // Create a new CA client for interacting with the CA.
-    const caURL = ccp.certificateAuthorities[caHost].url;
+    const caURL = connectionProfile.certificateAuthorities[caHost].url;
     const ca = new FabricCAServices(caURL);
 
     // Create a new file system based wallet for managing identities.
@@ -74,9 +74,12 @@ async function registerUser(req, res) {
 
     // Register the user, enroll the user, and import the new identity into the wallet.
     const secret = await ca.register({
-      affiliation: user.affiliation,
       enrollmentID: user.userName,
-      role: user.role
+      enrollmentSecret: user.enrollmentSecret || `${user.userName}pw`,
+      role: user.role,
+      affiliation: user.affiliation,
+      maxEnrollments: user.maxEnrollments || 1,
+      attrs: user.attrs
     }, adminUser);
     const enrollment = await ca.enroll({
       enrollmentID: user.userName,
@@ -106,8 +109,8 @@ async function registerUser(req, res) {
 async function enrollAdmin(req, res) {
   const orgName = req.body.orgName;
   const orgDomain = req.body.orgDomain || req.body.orgName;
-  const caAdminUser = req.body.adminName || `admin-${orgName}`;
-  const caAdminPassword = req.body.adminPassword  || `admin-${orgName}pw`;
+  const caAdminUser = req.body.adminName || `ica-${orgName}-admin`;
+  const caAdminPassword = req.body.adminPassword  || `ica-${orgName}-adminpw`;
   // TODO: Check input
 
   const caHost = `ica-${orgName}.${orgDomain}`;
@@ -117,11 +120,10 @@ async function enrollAdmin(req, res) {
   let msg;
   try {
     // load the network configuration
-    const ccpPath = path.resolve(__dirname, '..', connectionProfilePath);
-    const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
+    const connectionProfile = yaml.safeLoad(fs.readFileSync('./artifacts/network-config.yaml', 'utf8'));
 
     // Create a new CA client for interacting with the CA.
-    const caInfo = ccp.certificateAuthorities[caHost];
+    const caInfo = connectionProfile.certificateAuthorities[caHost];
     const caTLSCACerts = caInfo.tlsCACerts.pem;
     const ca = new FabricCAServices(caInfo.url, {
       trustedRoots: caTLSCACerts,
