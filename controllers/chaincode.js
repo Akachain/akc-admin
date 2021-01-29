@@ -13,8 +13,9 @@ const packageExternalCC = async (req, res) => {
   const {
     chaincodeName,
     orgName,
+    chaincodeDomain,
   } = req.body;
-  const cmd = `${env} ./scripts/package_external_cc.sh "${chaincodeName}" "${orgName}"`;
+  const cmd = `${env} ./scripts/package_external_cc.sh "${chaincodeName}" "${orgName}" "${chaincodeDomain}"`;
   const result = await shell.exec(cmd);
   const success = (result.code === 0) ? true : false;
   common.result(res, success, result.stdout);

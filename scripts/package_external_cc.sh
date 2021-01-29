@@ -5,6 +5,7 @@
 
 CHAINCODE_NAME=$1
 ORG_NAME=$2
+CHAINCODE_DOMAIN=$3
 getDomain $ORG_NAME
 
 CURRENT_FOLDER=$PWD
@@ -14,7 +15,7 @@ cd external-chaincode/${CHAINCODE_NAME}
 # Generate connection.json
 echo "
 {
-    \"address\": \"chaincode-${CHAINCODE_NAME}-${ORG_NAME}.${DOMAIN}:7052\",
+    \"address\": \"${CHAINCODE_NAME}-${ORG_NAME}.${CHAINCODE_DOMAIN}:7052\",
     \"dial_timeout\": \"10s\",
     \"tls_required\": false,
     \"client_auth_required\": false,
