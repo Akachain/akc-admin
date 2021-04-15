@@ -5,6 +5,124 @@ const akcSDK = require('@akachain/akc-node-sdk')
 
 const logger = require('../utils/logger.js').getLogger('channel-service');
 
+async function updateChannelConfig(req) {
+  const {
+    channelName,
+    configUpdatePath,
+    orgname,
+  } = req.body;
+
+  let username = req.body.username || orgname;
+
+  let error_message = null;
+  try {
+    // first setup the client for this org
+    const client = await akcSDK.getClientForOrg(orgname, username, true);
+    logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
+
+    const channel = client.getChannel(channelName);
+    if(!channel) {
+			let message = util.format('Channel %s was not defined in the connection profile', channelName);
+			logger.error(message);
+			throw new Error(message);
+		}
+
+    // read in the envelope for the channel config raw bytes
+    const envelope = fs.readFileSync(path.join(__dirname, configUpdatePath));
+    // extract the channel config bytes from the envelope to be signed
+    const channelConfig = client.extractChannelConfig(envelope);
+
+    // Acting as a client in the given organization provided with "orgName" param
+    // sign the channel config bytes as "endorsement", this is required by
+    // the orderer's channel creation policy
+    // this will use the admin identity assigned to the client
+    // when the connection profile was loaded
+    const signature = client.signChannelConfig(channelConfig);
+
+    const request = {
+      config: channelConfig,
+      signatures: [signature],
+      name: channelName,
+      txId: client.newTransactionID(true), // get an admin based transactionID
+    };
+
+    const promises = [];
+		const event_hubs = channel.getChannelEventHubsForOrg();
+		logger.debug('found %s eventhubs for this organization %s',event_hubs.length, orgname);
+		event_hubs.forEach((eh) => {
+			const anchorUpdateEventPromise = new Promise((resolve, reject) => {
+				logger.debug('anchorUpdateEventPromise - setting up event');
+				const event_timeout = setTimeout(() => {
+					let message = 'REQUEST_TIMEOUT:' + eh.getPeerAddr();
+					logger.error(message);
+					eh.disconnect();
+				}, 60000);
+				eh.registerBlockEvent((block) => {
+					logger.info('The config update has been committed on peer %s',eh.getPeerAddr());
+					clearTimeout(event_timeout);
+					resolve();
+				}, (err) => {
+					clearTimeout(event_timeout);
+					logger.error(err);
+					reject(err);
+				},
+					// the default for 'unregister' is true for block listeners
+					// so no real need to set here, however for 'disconnect'
+					// the default is false as most event hubs are long running
+					// in this use case we are using it only once
+					{unregister: true, disconnect: true}
+				);
+				eh.connect();
+			});
+			promises.push(anchorUpdateEventPromise);
+		});
+
+    const sendPromise = client.updateChannel(request);
+		// put the send to the orderer last so that the events get registered and
+		// are ready for the orderering and committing
+		promises.push(sendPromise);
+		const results = await Promise.all(promises);
+		logger.debug(util.format('------->>> R E S P O N S E : %j', results));
+		const response = results.pop(); //  orderer results are last in the results
+
+		if (response) {
+			if (response.status === 'SUCCESS') {
+				logger.info('Successfully update config channel %s', channelName);
+			} else {
+				error_message = util.format('Failed to update the config channel %s with status: %s reason: %s', channelName, response.status, response.info);
+				logger.error(error_message);
+			}
+		} else {
+			error_message = util.format('Failed to update the config channel %s', channelName);
+			logger.error(error_message);
+		}
+
+  } catch (err) {
+    logger.error('Failed to update the config channel due to error: ' + err.stack ? err.stack :	err);
+		error_message = err.toString();
+  }
+
+  if (!error_message) {
+		let message = util.format(
+			'Successfully update the config channel \'%s\'',
+			channelName);
+		logger.info(message);
+		const response = {
+			success: true,
+			message: message
+		};
+		return response;
+	} else {
+		let message = util.format('Failed to update the config channel. cause:%s',error_message);
+		logger.error(message);
+		const response = {
+			success: false,
+			message: message
+		};
+		return response;
+	}
+}
+
 async function channels(req) {
   const {
     channelName,
@@ -241,8 +359,9 @@ const getBlock = async (req) => {
       msg: 'Missing blockNumber or txId in req.body'
     }
   }
-}
+};
 
+exports.updateChannelConfig = updateChannelConfig;
 exports.channels = channels;
 exports.getBlock = getBlock;
 exports.joinchannel = joinchannel;

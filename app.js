@@ -43,6 +43,16 @@ app.post('/:functionName', (req, res) => {
   if (req.body.orgname) common.addConnectionProfile(req.body.orgname);
   try {
     switch (funcName) {
+      case 'updateChannelConfig':
+        channelService.updateChannelConfig(req)
+          .then(result => res.send(result))
+          .catch((err) => {
+            res.status(500).send({
+              success: false,
+              message: err.message
+            });
+          });
+        break;
       case 'getBlock':
         channelService.getBlock(req)
           .then(result => res.send(result))
@@ -164,7 +174,7 @@ app.post('/:functionName', (req, res) => {
         res.status(500).send('API not found!');
     }
     return;
-  } catch (error) {
+  } catch (err) {
     res.send({
       success: false,
       message: err.message
