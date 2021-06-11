@@ -5,6 +5,16 @@ const akcSDK = require('@akachain/akc-node-sdk')
 
 const logger = require('../utils/logger.js').getLogger('channel-service');
 
+const getSignatures = async (listSignOrg, channelConfig) => {
+  const signatures = [];
+  listSignOrg.forEach(async (orgname) => {
+    const client = await akcSDK.getClientForOrg(orgname, orgname, true);
+    const signature = client.signChannelConfig(channelConfig);
+    signatures.push(signature);
+  });
+  return signatures;
+}
+
 async function updateChannelConfig(req) {
   const {
     channelName,
@@ -13,9 +23,11 @@ async function updateChannelConfig(req) {
   } = req.body;
 
   let username = req.body.username || orgname;
+  let listSignOrg = req.body.listSignOrg || [orgname];
 
   let error_message = null;
   try {
+    
     // first setup the client for this org
     const client = await akcSDK.getClientForOrg(orgname, username, true);
     logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
@@ -37,11 +49,11 @@ async function updateChannelConfig(req) {
     // the orderer's channel creation policy
     // this will use the admin identity assigned to the client
     // when the connection profile was loaded
-    const signature = client.signChannelConfig(channelConfig);
+    const signatures = await getSignatures(listSignOrg, channelConfig);
 
     const request = {
       config: channelConfig,
-      signatures: [signature],
+      signatures,
       name: channelName,
       txId: client.newTransactionID(true), // get an admin based transactionID
     };
