@@ -1,6 +1,8 @@
 'use strict';
 const shell = require('shelljs');
+const { BlockDecoder } = require('fabric-common');
 const common = require('../utils/common');
+const utils = require('../utils');
 
 const env = common.getEnv();
 
@@ -73,50 +75,33 @@ async function join(req, res) {
 //   }
 // };
 
-// const getBlock = async (req, res) => {
-//   const {
-//     orgname,
-//     username,
-//     channelName,
-//     blockNumber,
-//     txId
-//   } = req.body;
-//   const client = await akcSDK.getClientForOrg(orgname, username, true);
-//   logger.debug('Successfully got the fabric client for the organization "%s"', orgname);
-//   const channel = client.getChannel(channelName);
-//   if (!channel) {
-//     const message = util.format('Channel %s was not defined in the connection profile', channelName);
-//     logger.error(message);
-//     throw new Error(message);
-//   }
-//   const targets = client.getPeersForOrg()[0];
-//   if ( blockNumber && blockNumber !== '' ) {
-//     logger.debug(util.format('Get block number %s', blockNumber));
-//     const result = await channel.queryBlock(Number(blockNumber), targets);
-//     logger.debug('query response: ', JSON.stringify(result));
-//     return {
-//       success: true,
-//       data: result,
-//     };
-//   } else if ( txId && txId !== '' ) {
-//     logger.debug(util.format('Get block transaction %s', txId));
-//     // send proposal to endorser
-//     const result = await channel.queryBlockByTxID(txId, targets);
-//     logger.debug('query response: ', JSON.stringify(result));
-//     return {
-//       success: true,
-//       data: result,
-//     };
-//   } else {
-//     return {
-//       success: false,
-//       msg: 'Missing blockNumber or txId in req.body'
-//     }
-//   }
-// }
+const getBlock = async (req, res) => {
+  const {
+    userName,
+    channelName,
+    fcn,
+    blockNum
+  } = req.body;
+
+  try {
+    const querySystemChaincode = 'qscc';
+    const queryFunction = fcn ? fcn : 'GetBlockByNumber';
+
+    const {network, gateway} = await utils.fabric.getNetwork(userName, channelName);
+
+    // Get the contract from the network.
+    const contract = network.getContract(querySystemChaincode);
+    const resultByte = await contract.evaluateTransaction(queryFunction, channelName, String(blockNum));
+    await gateway.disconnect();
+    common.result(res, true, BlockDecoder.decode(resultByte)); 
+  } catch (e) {
+    console.log(e)
+    common.result(res, false, e.message);
+  }
+}
 
 
 exports.create = create;
 exports.join = join;
 // exports.getGenesisBlock = getGenesisBlock;
-// exports.getBlock = getBlock;
+exports.getBlock = getBlock;

@@ -1,0 +1,1 @@
+exports.fabric = require("./fabric");

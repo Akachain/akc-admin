@@ -164,3 +164,14 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/query \
   "args": []
 }'
 ```
+
+### Query Block
+```
+curl --location --request POST http://localhost:4001/api/v2/channels/getBlock \
+--header 'content-type: application/json' \
+--data-raw '{
+  "channelName": "mychannel",
+  "userName": "appUser",
+  "blockNum": "12060"
+}'
+```
