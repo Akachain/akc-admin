@@ -27,12 +27,12 @@ In this guide, we assume that you've already started test network by following [
 
 - Copy the following files from repository
 
-  - [docker-compose.yaml](https://raw.githubusercontent.com/Akachain/akc-admin/update-docs/docker-compose.yaml)
-  - [examples/artifacts/network-config.yaml](https://raw.githubusercontent.com/Akachain/akc-admin/update-docs/example/artifacts/network-config.yaml)
+  - [docker-compose.yaml](https://raw.githubusercontent.com/Akachain/akc-admin/master/docker-compose.yaml)
+  - [examples/artifacts/network-config.yaml](https://raw.githubusercontent.com/Akachain/akc-admin/master/example/artifacts/network-config.yaml)
 
   ```
-  $ wget https://raw.githubusercontent.com/Akachain/akc-admin/update-docs/example/artifacts/network-config.yaml
-  $ wget https://raw.githubusercontent.com/Akachain/akc-admin/update-docs/docker-compose.yaml
+  $ wget https://raw.githubusercontent.com/Akachain/akc-admin/master/example/artifacts/network-config.yaml
+  $ wget https://raw.githubusercontent.com/Akachain/akc-admin/master/docker-compose.yaml
   ```
 
 - Copy entire crypto artifact directory (e.g. crypto-config/, organizations/, channel-artifacts/) from your fabric network
