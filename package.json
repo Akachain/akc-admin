@@ -11,12 +11,13 @@
   "keywords": [],
   "license": "GNU-3.0",
   "dependencies": {
-    "js-yaml": "3.14.1",
     "body-parser": "^1.19.0",
     "cors": "^2.8.3",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "fabric-ca-client": "^2.1.0",
     "fabric-network": "^2.1.0",
+    "js-yaml": "3.14.1",
     "log4js": "^3.0.4",
     "shelljs": "^0.8.3"
   },

@@ -104,14 +104,14 @@ dist
 .tern-port
 
 # akachain artifacts
-artifacts/
-artifacts/network-config.yaml
+# artifacts/
+# artifacts/network-config.yaml
 certs/
-crypto-config/
-crypto-path/
-crypto-store/
+# crypto-config/
+# crypto-path/
+# crypto-store/
 
 note.sh
 .npmrc
-artifacts/
-wallet
+# artifacts/
+# wallet

@@ -3,13 +3,13 @@ version: '2'
 networks:
   test:
     external:
-      name: net_test
+      name: fabric_test
 
 services:
-  admin:
-    image: docker.pkg.github.com/akachain/akc-admin/develop:2.0
+  admin-org1:
+    image: ghcr.io/akachain/akc-admin/master:2.2.1
     environment:
-      - ORGS=orderer Org1
+      - ORGS=orderer org1
       - DOMAINS=example.com org1.example.com
       - NODE_ENV=development
       - GOPATH=/opt/gopath
@@ -27,10 +27,41 @@ services:
     ports:
       - "4001:4001"
     volumes:
-      - /Users/harisato/project/hyperledger/fabric-samples/test-network/organizations:/shared/crypto-config
-      - /Users/harisato/project/hyperledger/fabric-samples/test-network/channel-artifacts:/shared/channel-artifacts
-      - ./artifacts/:/data/app/artifacts/
-      - /Users/harisato/project/hyperledger/fabric-samples/chaincode:/opt/gopath/src/github.com/hyperledger/fabric-samples/chaincode
+      - ./example/organizations:/shared/crypto-config
+      - ./example/channel-artifacts:/shared/channel-artifacts
+      - ./example/artifacts/:/data/app/artifacts/
+      - ./example/chaincode:/chaincodes
+      - ./example/wallet:/data/app/wallet
+    container_name: admin
+    networks:
+      - test
+  
+  admin-org2:
+    image: ghcr.io/akachain/akc-admin/master:2.2.1
+    environment:
+      - ORGS=orderer org2
+      - DOMAINS=example.com org2.example.com
+      - NODE_ENV=development
+      - GOPATH=/opt/gopath
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - FABRIC_LOGGING_SPEC=INFO
+      - CORE_PEER_ID=cli
+      - CORE_PEER_ADDRESS=peer0.org2.example.com:7051
+      - CORE_PEER_LOCALMSPID=Org2MSP
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_TLS_CERT_FILE=/shared/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/shared/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/shared/crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt
+      - CORE_PEER_MSPCONFIGPATH=/shared/crypto-config/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp/
+      - ORDERER_CA=/shared/crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem
+    ports:
+      - "4001:4001"
+    volumes:
+      - ./example/organizations:/shared/crypto-config
+      - ./example/channel-artifacts:/shared/channel-artifacts
+      - ./example/artifacts/:/data/app/artifacts/
+      - ./example/chaincode:/chaincodes
+      - ./example/wallet:/data/app/wallet
     container_name: admin
     networks:
       - test

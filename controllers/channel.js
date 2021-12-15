@@ -3,6 +3,7 @@ const shell = require('shelljs');
 const { BlockDecoder } = require('fabric-common');
 const common = require('../utils/common');
 const utils = require('../utils');
+const path = require('path');
 
 const env = common.getEnv();
 

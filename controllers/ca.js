@@ -12,15 +12,12 @@ const common = require('../utils/common');
 
 const type = 'X.509';
 
-// const orgMSP = 'Org1MSP';
-// const caHost = 'ca.org1.example.com';
-// const connectionProfilePath = 'artifacts/connection-org1.json';
-
 async function registerUser(req, res) {
   // TODO: Verify INPUT
   const orgName = req.body.orgName;
   const orgDomain = req.body.orgDomain || req.body.orgName;
   const caAdminUser = req.body.adminName || `ica-${orgName}-admin`;
+  const caHost = req.body.caHost || `ica-${orgName}.${orgDomain}`;
   let user = {
     userName: req.body.userName,
     role: req.body.role,
@@ -32,9 +29,8 @@ async function registerUser(req, res) {
   user.affiliation = user.affiliation || 'org1.department1';
   user.role = user.role || 'client';
 
-  const caHost = `ica-${orgName}.${orgDomain}`;
+  
   const orgMSP = `${orgName}MSP`;
-  const connectionProfilePath = `artifacts/connection-${orgName}.json`;
 
   let msg;
   try {
@@ -113,9 +109,8 @@ async function enrollAdmin(req, res) {
   const caAdminPassword = req.body.adminPassword  || `ica-${orgName}-adminpw`;
   // TODO: Check input
 
-  const caHost = `ica-${orgName}.${orgDomain}`;
+  const caHost = req.body.caHost  || `ica-${orgName}.${orgDomain}`;
   const orgMSP = `${orgName}MSP`;
-  const connectionProfilePath = `artifacts/connection-${orgName}.json`;
 
   let msg;
   try {
