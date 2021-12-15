@@ -4,6 +4,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const http = require('http');
 const cors = require('cors');
+require('dotenv').config();
 const loggerCommon = require('./utils/logger');
 const routeChannel = require('./routes/channel');
 const routeChaincode = require('./routes/chaincode');
