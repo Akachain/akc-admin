@@ -33,7 +33,8 @@ mkdir -p $CHAINCODE_IN_GOPATH
 cp -r $CHAINCODE_PATH $CHAINCODE_IN_GOPATH
 # Install go module
 cd $CHAINCODE_IN_GOPATH/$CHAINCODE_FOLDER
-GO111MODULE=on go mod vendor
+go mod tidy
+go mod vendor
 
 # Get chaincode path in GOPATH
 CHAINCODE_PATH_IN_GOPATH=${CHAINCODE_FOLDER}
@@ -46,7 +47,7 @@ set +x
 cd $CURRENT_FOLDER
 setGlobals $PEER_INDEX $ORG_NAME
 set -x
-peer lifecycle chaincode package ${CHAINCODE_NAME}.tar.gz --path ${CHAINCODE_PATH_IN_GOPATH} --lang ${CHAINCODE_LANG} --label ${CHAINCODE_NAME}_${VERSION} >&log.txt
+peer lifecycle chaincode package ${CHAINCODE_NAME}.tar.gz --path ${CHAINCODE_IN_GOPATH}/${CHAINCODE_FOLDER} --lang ${CHAINCODE_LANG} --label ${CHAINCODE_NAME}_${VERSION} >&log.txt
 res=$?
 set +x
 cat log.txt

@@ -1,4 +1,4 @@
-FROM akachain/fabric-tools:amd64-2.2.0-fabric-sp-mongodb
+FROM hyperledger/fabric-tools:2.2.15
 
 RUN apk update && apk add --update --no-cache python3 make g++
 RUN apk add  --no-cache nodejs npm
