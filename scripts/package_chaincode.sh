@@ -9,7 +9,7 @@ VERSION=$2
 CHAINCODE_PATH=$3
 CHAINCODE_LANG=$4
 ORG_NAME=$5
-PEER_INDEX=$6
+PEER_INDEX=$6 
 MODULE_PATH=$7
 
 if [ "${MODULE_PATH}" == "undefined" ]; then
@@ -25,11 +25,20 @@ fi
 set -x
 CURRENT_FOLDER=$PWD
 CHAINCODE_FOLDER=`basename ${CHAINCODE_PATH}`
-CHAINCODE_IN_GOPATH=$GOPATH/src/$MODULE_PATH/
+
+# Set up proper GOPATH structure
+if [ "${MODULE_PATH}" != "" ]; then
+    CHAINCODE_IN_GOPATH=$GOPATH/src/${MODULE_PATH}/
+else
+    CHAINCODE_IN_GOPATH=$GOPATH/src/
+fi
 
 # Make Chaincode Module path
 mkdir -p $CHAINCODE_IN_GOPATH
-# Copy chaincode to GOPATH
+# Copy chaincode to GOPATH (ensure target directory exists)
+if [ -d "${CHAINCODE_IN_GOPATH}${CHAINCODE_FOLDER}" ]; then
+    rm -rf "${CHAINCODE_IN_GOPATH}${CHAINCODE_FOLDER}"
+fi
 cp -r $CHAINCODE_PATH $CHAINCODE_IN_GOPATH
 # Install go module
 cd $CHAINCODE_IN_GOPATH/$CHAINCODE_FOLDER
