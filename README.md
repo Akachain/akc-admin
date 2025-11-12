@@ -172,7 +172,30 @@ curl --location --request POST http://localhost:4001/api/v2/chaincodes/packageCC
   "chaincodeName":"fabcar",
   "chaincodeVersion":"1",
   "chaincodeType":"golang",
-  "peerIndex": "0"
+  "peerIndex": "0",
+  "chaincodeModulePath": ""
+}'
+```
+
+**Parameters:**
+- `chaincodeModulePath` (optional): Specifies the Go module path for the chaincode
+  - If empty `""`: Chaincode will be placed at `/go/src/{chaincodeFolderName}` and the module name will be the folder name
+  - If specified (e.g., `"vpid"`): Chaincode will be placed at `/go/src/vpid` with module path `vpid`
+  - For nested paths (e.g., `"github.com/org/mycc"`): Chaincode will be placed at `/go/src/github.com/org/mycc`
+  - The module path should match the `module` directive in your `go.mod` file
+
+**Example with module path:**
+```
+curl --location --request POST http://localhost:4001/api/v2/chaincodes/packageCC \
+--header 'content-type: application/json' \
+--data-raw '{
+  "orgName":"Org1",
+  "chaincodePath":"/chaincodes/mycc",
+  "chaincodeName":"mycc",
+  "chaincodeVersion":"2.0",
+  "chaincodeType":"golang",
+  "peerIndex": "0",
+  "chaincodeModulePath": "mycc"
 }'
 ```
 

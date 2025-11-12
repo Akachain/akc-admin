@@ -26,37 +26,38 @@ set -x
 CURRENT_FOLDER=$PWD
 CHAINCODE_FOLDER=`basename ${CHAINCODE_PATH}`
 
-# Set up proper GOPATH structure
+# Set up proper GOPATH structure based on MODULE_PATH
 if [ "${MODULE_PATH}" != "" ]; then
-    CHAINCODE_IN_GOPATH=$GOPATH/src/${MODULE_PATH}/
+    # When MODULE_PATH is specified, it represents the full module path
+    # e.g., MODULE_PATH="vpid" means the module is "vpid" at /go/src/vpid
+    # e.g., MODULE_PATH="github.com/org/vpid" means module at /go/src/github.com/org/vpid
+    CHAINCODE_TARGET=$GOPATH/src/${MODULE_PATH}
+    PARENT_DIR=`dirname ${CHAINCODE_TARGET}`
+    mkdir -p ${PARENT_DIR}
 else
-    CHAINCODE_IN_GOPATH=$GOPATH/src/
+    # When MODULE_PATH is empty, use the chaincode folder name as module
+    CHAINCODE_TARGET=$GOPATH/src/${CHAINCODE_FOLDER}
+    mkdir -p $GOPATH/src
 fi
 
-# Make Chaincode Module path
-mkdir -p $CHAINCODE_IN_GOPATH
-# Copy chaincode to GOPATH (ensure target directory exists)
-if [ -d "${CHAINCODE_IN_GOPATH}${CHAINCODE_FOLDER}" ]; then
-    rm -rf "${CHAINCODE_IN_GOPATH}${CHAINCODE_FOLDER}"
+# Remove existing chaincode and copy to target
+if [ -e "${CHAINCODE_TARGET}" ]; then
+    rm -rf "${CHAINCODE_TARGET}"
 fi
-cp -r $CHAINCODE_PATH $CHAINCODE_IN_GOPATH
+
+cp -r $CHAINCODE_PATH $CHAINCODE_TARGET
+
 # Install go module
-cd $CHAINCODE_IN_GOPATH/$CHAINCODE_FOLDER
+cd $CHAINCODE_TARGET
 go mod tidy
 go mod vendor
-
-# Get chaincode path in GOPATH
-CHAINCODE_PATH_IN_GOPATH=${CHAINCODE_FOLDER}
-if [ "${MODULE_PATH}" != "" ]; then
-    CHAINCODE_PATH_IN_GOPATH=${MODULE_PATH}/${CHAINCODE_FOLDER}
-fi
 set +x
 
 # Package chaincode
 cd $CURRENT_FOLDER
 setGlobals $PEER_INDEX $ORG_NAME
 set -x
-peer lifecycle chaincode package ${CHAINCODE_NAME}.tar.gz --path ${CHAINCODE_IN_GOPATH}/${CHAINCODE_FOLDER} --lang ${CHAINCODE_LANG} --label ${CHAINCODE_NAME}_${VERSION} >&log.txt
+peer lifecycle chaincode package ${CHAINCODE_NAME}.tar.gz --path ${CHAINCODE_TARGET} --lang ${CHAINCODE_LANG} --label ${CHAINCODE_NAME}_${VERSION} >&log.txt
 res=$?
 set +x
 cat log.txt
